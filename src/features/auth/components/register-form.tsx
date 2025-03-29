@@ -1,8 +1,11 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signupSchema, SignupInput } from "../schemas/signup-schema";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,8 +26,11 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { GitHubIcon } from "@/components/ui/github-icon";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const form = useForm<SignupInput>({
     defaultValues: {
       name: "",
@@ -35,16 +41,32 @@ export default function RegisterForm() {
     resolver: zodResolver(signupSchema),
   });
 
-  function onSubmit(data: SignupInput) {
-    console.log(data);
+  async function onSubmit(data: SignupInput) {
+    await authClient.signUp.email(
+      {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      },
+      {
+        onRequest: () => {
+          setIsLoading(true);
+        },
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+        onError: () => {
+          setIsLoading(false);
+          toast("Something went wrong");
+        },
+      },
+    );
   }
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">
-          Create an account
-        </CardTitle>
+        <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
         <CardDescription>
           Join TechSpace to organize and share your developer knowledge
         </CardDescription>
@@ -119,8 +141,12 @@ export default function RegisterForm() {
               )}
             />
 
-            <Button type="submit" className="w-full cursor-pointer">
-              Create account
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full cursor-pointer"
+            >
+              {isLoading ? "Creating account..." : "Create account"}
             </Button>
           </form>
         </CardContent>
