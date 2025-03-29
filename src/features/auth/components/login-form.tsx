@@ -1,8 +1,11 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { signinSchema, SigninInput } from "../schemas/signin-schema";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -23,8 +26,11 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { GitHubIcon } from "@/components/ui/github-icon";
+import { authClient, getAuthErrorMessage } from "@/lib/auth-client";
 
 export default function LoginForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const form = useForm<SigninInput>({
     defaultValues: {
       email: "",
@@ -33,8 +39,29 @@ export default function LoginForm() {
     resolver: zodResolver(signinSchema),
   });
 
-  function onSubmit(data: SigninInput) {
-    console.log(data);
+  async function onSubmit(data: SigninInput) {
+    const { error } = await authClient.signIn.email(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onRequest: () => {
+          setIsLoading(true);
+        },
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+        onError: () => {
+          setIsLoading(false);
+          if (error?.code) {
+            toast(getAuthErrorMessage(error.code, "en"));
+            return;
+          }
+          toast("Something went wrong");
+        },
+      },
+    );
   }
 
   return (
@@ -85,8 +112,12 @@ export default function LoginForm() {
               )}
             />
 
-            <Button type="submit" className="w-full cursor-pointer">
-              Sign in
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full cursor-pointer"
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
         </CardContent>
@@ -105,4 +136,3 @@ export default function LoginForm() {
     </Card>
   );
 }
-
