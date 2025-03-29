@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db";
 import { users } from "@/db/schema/users";
 import { accounts } from "@/db/schema/account";
@@ -45,4 +46,5 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 6,
   },
+  plugins: [nextCookies()]
 });
