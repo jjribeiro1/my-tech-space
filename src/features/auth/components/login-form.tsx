@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { signupSchema, SignupInput } from "../schemas/signup-schema";
+import { signinSchema, SigninInput } from "../schemas/signin-schema";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -24,30 +24,24 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { GitHubIcon } from "@/components/ui/github-icon";
 
-export default function RegisterForm() {
-  const form = useForm<SignupInput>({
+export default function LoginForm() {
+  const form = useForm<SigninInput>({
     defaultValues: {
-      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
-    resolver: zodResolver(signupSchema),
+    resolver: zodResolver(signinSchema),
   });
 
-  function onSubmit(data: SignupInput) {
+  function onSubmit(data: SigninInput) {
     console.log(data);
   }
 
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold">
-          Create an account
-        </CardTitle>
-        <CardDescription>
-          Join TechSpace to organize and share your developer knowledge
-        </CardDescription>
+        <CardTitle className="text-2xl font-bold">Sign in</CardTitle>
+        <CardDescription>Sign in to your TechSpace account</CardDescription>
       </CardHeader>
       <Form {...form}>
         <CardContent className="space-y-4">
@@ -63,20 +57,6 @@ export default function RegisterForm() {
           </div>
 
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="email"
@@ -105,30 +85,19 @@ export default function RegisterForm() {
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Confirm password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <Button type="submit" className="w-full cursor-pointer">
-              Create account
+              Sign in
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
           <p className="text-muted-foreground text-sm">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-primary hover:underline">
-              Sign in
+            {"Don't have an account? "}
+            <Link
+              href="/auth/register"
+              className="text-primary hover:underline"
+            >
+              Create account
             </Link>
           </p>
         </CardFooter>
@@ -136,3 +105,4 @@ export default function RegisterForm() {
     </Card>
   );
 }
+
