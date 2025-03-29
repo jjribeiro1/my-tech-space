@@ -8,7 +8,6 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
-
   const sessionCookie = getSessionCookie(request);
 
   if (isProtectedRoute && !sessionCookie) {
@@ -18,6 +17,7 @@ export function middleware(request: NextRequest) {
   if (
     isPublicRoute &&
     sessionCookie &&
+    path !== "/" &&
     !request.nextUrl.pathname.startsWith("/dashboard")
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
