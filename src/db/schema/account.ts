@@ -2,7 +2,7 @@ import * as t from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { timestamps } from "../helper";
 
-export const account = t.pgTable("accounts", {
+export const accounts = t.pgTable("accounts", {
   id: t.text().primaryKey(),
   accountId: t.text().notNull(),
   providerId: t.text().notNull(),

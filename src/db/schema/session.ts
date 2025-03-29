@@ -2,7 +2,7 @@ import * as t from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { timestamps } from "../helper";
 
-export const session = t.pgTable("sessions", {
+export const sessions = t.pgTable("sessions", {
   id: t.text().primaryKey(),
   expiresAt: t.timestamp().notNull(),
   token: t.text().notNull().unique(),
