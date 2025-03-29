@@ -1,32 +1,11 @@
 import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollectionCard } from "@/features/collection/components/collection-card";
+import { getCollectionsFromUser } from "@/features/collection/data";
 
-const collections = [
-  {
-    id: "1",
-    name: "React",
-    description: "Learn react",
-    resourceCount: 12,
-    isPrivate: false,
-  },
-  {
-    id: "2",
-    name: "Software Architecture",
-    description: "Learn Software Architecture",
-    resourceCount: 8,
-    isPrivate: true,
-  },
-  {
-    id: "3",
-    name: "NodeJS",
-    description: "Learn NodeJS",
-    resourceCount: 15,
-    isPrivate: false,
-  },
-];
+export default async function DashboardPage() {
+  const collections = await getCollectionsFromUser();
 
-export default function DashboardPage() {
   return (
     <article className="container mx-auto py-6">
       <section className="flex w-full flex-col gap-4">
@@ -41,7 +20,7 @@ export default function DashboardPage() {
         {collections.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {collections.map((collection) => (
-              <CollectionCard key={collection.id} collection={collection} />
+              <CollectionCard key={collection.id} collection={collection!} />
             ))}
           </div>
         ) : (

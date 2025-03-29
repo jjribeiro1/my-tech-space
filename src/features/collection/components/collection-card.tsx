@@ -12,8 +12,8 @@ interface Props {
   collection: {
     id: string;
     name: string;
-    description: string;
-    resourceCount: number;
+    slug: string;
+    description: string | null;
     isPrivate: boolean;
   };
 }
@@ -41,11 +41,6 @@ export function CollectionCard({ collection }: Props) {
       <CardContent>
         <p className="text-muted-foreground mb-2 line-clamp-2 text-sm">
           {collection.description}
-        </p>
-        <p className="text-muted-foreground text-xs">
-          {collection.resourceCount}{" "}
-          {collection.resourceCount === 1 ? "resource" : "resources"} • Updated
-          1 hour ago
         </p>
       </CardContent>
       <CardFooter>
