@@ -41,10 +41,10 @@ export default function RegisterForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-center text-2xl font-bold">
+        <CardTitle className="text-2xl font-bold">
           Create an account
         </CardTitle>
-        <CardDescription className="text-center">
+        <CardDescription>
           Join TechSpace to organize and share your developer knowledge
         </CardDescription>
       </CardHeader>
