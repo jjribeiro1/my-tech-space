@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { GitHubIcon } from "@/components/ui/github-icon";
-import { authClient } from "@/lib/auth-client";
+import { authClient, getAuthErrorMessage } from "@/lib/auth-client";
 
 export default function RegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ export default function RegisterForm() {
   });
 
   async function onSubmit(data: SignupInput) {
-    await authClient.signUp.email(
+    const { error } = await authClient.signUp.email(
       {
         email: data.email,
         password: data.password,
@@ -57,6 +57,10 @@ export default function RegisterForm() {
         },
         onError: () => {
           setIsLoading(false);
+          if (error?.code) {
+            toast(getAuthErrorMessage(error.code, "en"));
+            return;
+          }
           toast("Something went wrong");
         },
       },
