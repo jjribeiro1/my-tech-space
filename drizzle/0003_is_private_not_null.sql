@@ -1,0 +1,1 @@
+ALTER TABLE "collections" ALTER COLUMN "is_private" SET NOT NULL;

@@ -22,6 +22,13 @@
       "when": 1743289434868,
       "tag": "0002_collections_table",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1743291087463,
+      "tag": "0003_is_private_not_null",
+      "breakpoints": true
     }
   ]
 }

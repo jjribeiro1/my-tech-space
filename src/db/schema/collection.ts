@@ -7,7 +7,7 @@ export const collections = t.pgTable("collections", {
   name: t.text().notNull(),
   slug: t.text().notNull(),
   description: t.text(),
-  isPrivate: t.boolean().default(false),
+  isPrivate: t.boolean().default(false).notNull().default(false),
   userId: t.text().references(() => users.id),
   ...timestamps,
 });
