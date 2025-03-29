@@ -12,7 +12,7 @@ export default function AuthenticatedLayout({
           </div>
         </div>
       </header>
-      <main>{children}</main>
+      <main className="px-4 md:px-0">{children}</main>
     </>
   );
 }
