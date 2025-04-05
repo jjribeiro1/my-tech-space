@@ -29,6 +29,13 @@
       "when": 1743291087463,
       "tag": "0003_is_private_not_null",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1743878483447,
+      "tag": "0004_user_id_name_unique_idx",
+      "breakpoints": true
     }
   ]
 }
