@@ -1,6 +1,7 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { collections } from "@/db/schema/collection";
@@ -14,30 +15,42 @@ const schema = z.object({
   isPrivate: z.boolean().default(false),
 });
 
-type Input = z.infer<typeof schema>
+type Input = z.infer<typeof schema>;
 
-export async function createCollectionAction(data: Input): Promise<ActionResponse> {
-  const session = await getSession();
-  if (!session) {
-    redirect("/auth/login");
-  }
-  const validatedData = schema.safeParse(data);
+export async function createCollectionAction(
+  data: Input,
+): Promise<ActionResponse> {
+  try {
+    const session = await getSession();
+    if (!session) {
+      redirect("/auth/login");
+    }
+    const validatedData = schema.safeParse(data);
 
-  if (!validatedData.success) {
+    if (!validatedData.success) {
+      return {
+        success: false,
+        message: "Something went wrong, invalid data",
+      };
+    }
+
+    await db.insert(collections).values({
+      userId: session.user.id,
+      ...validatedData.data,
+      slug: slugify(validatedData.data.name),
+    });
+
+    revalidatePath("/dashboard", "page");
+
+    return {
+      success: true,
+      message: "Collection created successfully",
+    };
+  } catch (err) {
+    console.error(err);
     return {
       success: false,
-      message: "Something went wrong, invalid data",
+      message: "Something went wrong, please try again",
     };
   }
-
-  await db.insert(collections).values({
-    userId: session.user.id,
-    ...validatedData.data,
-    slug: slugify(validatedData.data.name),
-  });
-
-  return {
-    success: true,
-    message: "Collection created successfully",
-  };
 }
