@@ -26,7 +26,7 @@ export function CollectionCard({ collection }: Props) {
           <div className="flex items-center gap-2">
             <Folder className="text-primary h-5 w-5" />
             <Link
-              href={`/collection/${collection.id}`}
+              href={`/collection/${collection.slug}`}
               className="font-medium hover:underline"
             >
               {collection.name}
@@ -45,7 +45,7 @@ export function CollectionCard({ collection }: Props) {
       </CardContent>
       <CardFooter>
         <Link
-          href={`/collection/${collection.id}`}
+          href={`/collection/${collection.slug}`}
           className={buttonVariants({ variant: "ghost", size: "sm" })}
         >
           View collection
