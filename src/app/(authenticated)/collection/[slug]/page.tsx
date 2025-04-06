@@ -11,6 +11,7 @@ import {
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ResourceList } from "@/features/resources/components/resource-list";
 import { getCollectionsFromUser } from "@/features/collection/data";
+import { getResourceByCollection } from "@/features/resources/data";
 
 export default async function CollectionPage({
   params,
@@ -18,8 +19,9 @@ export default async function CollectionPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const collections = await getCollectionsFromUser()
-  const collectionFromSlug = collections.find((c) => c.slug === slug)
+  const collections = await getCollectionsFromUser();
+  const collectionFromSlug = collections.find((c) => c.slug === slug);
+  const resourcesFromCollection = await getResourceByCollection(collectionFromSlug?.id as string)
 
   return (
     <>
@@ -58,12 +60,15 @@ export default async function CollectionPage({
         </div>
       </section>
 
-      <section className="container mx-auto py-6">
-        <h2 className="text-muted-foreground">{collectionFromSlug?.description}</h2>
-      </section>
+      <h2 className="text-muted-foreground container mx-auto py-6">
+        {collectionFromSlug?.description}
+      </h2>
 
       <section className="container mx-auto py-6">
-        <ResourceList collections={collections} selectedCollectionId={collectionFromSlug?.id as string} />
+        <ResourceList
+          collections={collections}
+          resources={resourcesFromCollection}
+        />
       </section>
     </>
   );
