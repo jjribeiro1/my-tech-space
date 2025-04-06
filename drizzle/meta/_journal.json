@@ -43,6 +43,13 @@
       "when": 1743948263810,
       "tag": "0005_resources_tables",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1743949382338,
+      "tag": "0006_rename_resource_columns",
+      "breakpoints": true
     }
   ]
 }

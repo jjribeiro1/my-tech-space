@@ -5,8 +5,9 @@ import { collections } from "./collection";
 
 export const resources = t.pgTable("resources", {
   id: t.uuid().primaryKey().defaultRandom(),
-  name: t.text().notNull(),
+  title: t.text().notNull(),
   description: t.text(),
+  url: t.text(),
   resourceTypeId: t.uuid().references(() => resourceTypes.id),
   collectionId: t.uuid().references(() => collections.id),
   ...timestamps,
