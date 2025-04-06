@@ -9,7 +9,8 @@ import {
   Unlock,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { getCollectionBySlug } from "@/features/collection/data";
+import { ResourceList } from "@/features/resources/components/resource-list";
+import { getCollectionsFromUser } from "@/features/collection/data";
 
 export default async function CollectionPage({
   params,
@@ -17,7 +18,8 @@ export default async function CollectionPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const collection = await getCollectionBySlug(slug);
+  const collections = await getCollectionsFromUser()
+  const collectionFromSlug = collections.find((c) => c.slug === slug)
 
   return (
     <>
@@ -31,8 +33,8 @@ export default async function CollectionPage({
               <ArrowLeft />
             </Link>
             <Folder className="h-5 w-5" />
-            <h1 className="text-lg font-medium">{collection.name}</h1>
-            {collection.isPrivate ? (
+            <h1 className="text-lg font-medium">{collectionFromSlug?.name}</h1>
+            {collectionFromSlug?.isPrivate ? (
               <Lock className="text-muted-foreground h-4 w-4" />
             ) : (
               <Unlock className="text-muted-foreground h-4 w-4" />
@@ -57,7 +59,11 @@ export default async function CollectionPage({
       </section>
 
       <section className="container mx-auto py-6">
-        <h2 className="text-muted-foreground">{collection.description}</h2>
+        <h2 className="text-muted-foreground">{collectionFromSlug?.description}</h2>
+      </section>
+
+      <section className="container mx-auto py-6">
+        <ResourceList collections={collections} selectedCollectionId={collectionFromSlug?.id as string} />
       </section>
     </>
   );
