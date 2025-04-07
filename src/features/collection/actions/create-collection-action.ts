@@ -1,7 +1,7 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { collections } from "@/db/schema/collection";
@@ -40,7 +40,7 @@ export async function createCollectionAction(
       slug: slugify(validatedData.data.name),
     });
 
-    revalidatePath("/dashboard", "page");
+    revalidateTag("new-collection");
 
     return {
       success: true,

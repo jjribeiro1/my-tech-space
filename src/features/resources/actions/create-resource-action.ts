@@ -1,7 +1,7 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
@@ -39,7 +39,7 @@ export async function createResourceAction(
       ...validatedData.data,
     });
 
-    revalidatePath("/collection", "page");
+    revalidateTag("new-resource");
 
     return {
       success: true,
