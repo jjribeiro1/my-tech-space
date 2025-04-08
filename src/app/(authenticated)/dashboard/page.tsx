@@ -1,10 +1,8 @@
-import { Suspense } from "react";
 import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollectionCard } from "@/features/collection/components/collection-card";
 import { CreateCollectionDialog } from "@/features/collection/components/collection-dialog";
 import { getCollectionsFromUser } from "@/features/collection/data";
-import { CollectionCardSkeleton } from "@/features/collection/components/collection-card-skeleton";
 
 export default async function DashboardPage() {
   const collections = await getCollectionsFromUser();
@@ -17,7 +15,7 @@ export default async function DashboardPage() {
           <CreateCollectionDialog />
         </div>
 
-        <Suspense fallback={CollectionsFallback()}>
+        
           {collections.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {collections.map((collection) => (
@@ -38,18 +36,9 @@ export default async function DashboardPage() {
               <Button>Create collection</Button>
             </div>
           )}
-        </Suspense>
       </section>
     </article>
   );
 }
 
-function CollectionsFallback() {
-  return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <CollectionCardSkeleton key={i} />
-      ))}
-    </div>
-  );
-}
+
