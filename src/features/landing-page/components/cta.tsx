@@ -1,4 +1,5 @@
-import { Link, ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 
 export function CTA() {
@@ -21,7 +22,7 @@ export function CTA() {
               className={buttonVariants({ size: "lg" })}
             >
               Get Started for Free
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight />
             </Link>
             <Link
               href="/auth/login"
