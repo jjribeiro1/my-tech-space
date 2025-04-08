@@ -37,7 +37,7 @@ export default function LoadingCollectionPage() {
         </div>
 
         <div className="space-y-4">
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 2 }).map((_, i) => (
             <div key={i} className="rounded-md border p-4">
               <div className="flex justify-between items-center mb-4">
                 <div className="flex flex-col gap-2">
