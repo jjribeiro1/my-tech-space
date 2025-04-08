@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import { FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CollectionCard } from "@/features/collection/components/collection-card";
 import { CreateCollectionDialog } from "@/features/collection/components/collection-dialog";
 import { getCollectionsFromUser } from "@/features/collection/data";
+import { CollectionCardSkeleton } from "@/features/collection/components/collection-card-skeleton";
 
 export default async function DashboardPage() {
   const collections = await getCollectionsFromUser();
@@ -15,25 +17,39 @@ export default async function DashboardPage() {
           <CreateCollectionDialog />
         </div>
 
-        {collections.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {collections.map((collection) => (
-              <CollectionCard key={collection.id} collection={collection!} />
-            ))}
-          </div>
-        ) : (
-          <div className="bg-muted/20 flex flex-col items-center justify-center rounded-lg border p-8 text-center">
-            <div className="bg-muted mb-4 flex h-20 w-20 items-center justify-center rounded-full">
-              <FolderPlus className="h-10 w-10" />
+        <Suspense fallback={CollectionsFallback()}>
+          {collections.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {collections.map((collection) => (
+                <CollectionCard key={collection.id} collection={collection!} />
+              ))}
             </div>
-            <h3 className="mb-1 text-lg font-medium">No collection created</h3>
-            <p className="text-muted-foreground mb-4 max-w-sm text-sm">
-              Create your first collection to start organizing your resources
-            </p>
-            <Button>Create collection</Button>
-          </div>
-        )}
+          ) : (
+            <div className="bg-muted/20 flex flex-col items-center justify-center rounded-lg border p-8 text-center">
+              <div className="bg-muted mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+                <FolderPlus className="h-10 w-10" />
+              </div>
+              <h3 className="mb-1 text-lg font-medium">
+                No collection created
+              </h3>
+              <p className="text-muted-foreground mb-4 max-w-sm text-sm">
+                Create your first collection to start organizing your resources
+              </p>
+              <Button>Create collection</Button>
+            </div>
+          )}
+        </Suspense>
       </section>
     </article>
+  );
+}
+
+function CollectionsFallback() {
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <CollectionCardSkeleton key={i} />
+      ))}
+    </div>
   );
 }
