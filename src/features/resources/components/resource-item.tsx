@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import dayjs from "@/lib/dayjs";
+import ResourceActionsDropdown from "./resource-dropdown-actions";
 
 interface Props {
   resource: {
@@ -30,9 +31,12 @@ export function ResourceItem({ resource }: Props) {
             <CardDescription>{resource.description}</CardDescription>
           </div>
 
-          <Link href={resource.url!} target="_blank">
-            <ExternalLink />
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link href={resource.url!} target="_blank">
+              <ExternalLink />
+            </Link>
+            <ResourceActionsDropdown />
+          </div>
         </div>
       </CardHeader>
       <CardContent>{`Created ${dayjs(resource.created_at).fromNow(false)}`}</CardContent>
