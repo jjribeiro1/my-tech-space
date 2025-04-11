@@ -2,17 +2,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreateResourceDialog } from "./create-resource-dialog";
 import { ResourceItem } from "./resource-item";
 import { getAllResourceTypes } from "../data";
+import { Resource } from "../types";
 
 interface Props {
   collections: Array<{ id: string; name: string }>;
-  resources: Array<{
-    id: string;
-    title: string;
-    url: string | null;
-    description: string | null;
-    resourceTypeId: string | null;
-    created_at: Date;
-  }>;
+  resources: Array<Resource>;
 }
 
 export async function ResourceList({ collections, resources }: Props) {

@@ -9,16 +9,10 @@ import {
 } from "@/components/ui/card";
 import dayjs from "@/lib/dayjs";
 import ResourceActionsDropdown from "./resource-dropdown-actions";
+import { Resource } from "../types";
 
 interface Props {
-  resource: {
-    id: string;
-    title: string;
-    url: string | null;
-    description: string | null;
-    resourceTypeId: string | null;
-    created_at: Date;
-  };
+  resource: Resource;
 }
 
 export function ResourceItem({ resource }: Props) {
