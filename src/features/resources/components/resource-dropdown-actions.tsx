@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ResourceFormDialog } from "./resource-dialog";
 import { Collection } from "@/features/collection/types";
 import { Resource, ResourceType } from "../types";
+import { DeleteResourceAlertDialog } from "./delete-resource-alert";
 
 interface Props {
   collections: Array<Collection>;
@@ -22,7 +23,8 @@ export default function ResourceActionsDropdown({
   resourceTypes,
   resource,
 }: Props) {
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openResourceFormDialog, setOpenResourceFormDialog] = useState(false);
+  const [openDeleteResourceAlert, setOpenDeleteResourceAlert] = useState(false);
 
   return (
     <>
@@ -36,22 +38,36 @@ export default function ResourceActionsDropdown({
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
-              setOpenDialog(true);
+              setOpenResourceFormDialog(true);
             }}
           >
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem>Remmover</DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setOpenDeleteResourceAlert(true);
+            }}
+          >
+            Remove
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {openDialog && (
+      {openResourceFormDialog && (
         <ResourceFormDialog
+          openDialog={openResourceFormDialog}
+          setOpenDialog={setOpenResourceFormDialog}
           collections={collections}
           resourceTypes={resourceTypes}
-          openDialog={openDialog}
-          setOpenDialog={setOpenDialog}
           resourceToEdit={resource}
+        />
+      )}
+      {openDeleteResourceAlert && (
+        <DeleteResourceAlertDialog
+          openDialog={openDeleteResourceAlert}
+          setOpenDialog={setOpenDeleteResourceAlert}
+          resource={resource}
         />
       )}
     </>

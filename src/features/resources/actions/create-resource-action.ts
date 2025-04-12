@@ -39,7 +39,7 @@ export async function createResourceAction(
       ...validatedData.data,
     });
 
-    revalidateTag("new-resource");
+    revalidateTag("create-resource");
 
     return {
       success: true,
