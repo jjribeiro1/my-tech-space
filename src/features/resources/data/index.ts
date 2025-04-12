@@ -44,7 +44,7 @@ const resourcesByCollection = cache(
   [],
   {
     revalidate: 60 * 10,
-    tags: ["new-resource"],
+    tags: ["new-resource", "update-resource"],
   },
 );
 
