@@ -20,7 +20,7 @@ interface Props {
 export default function ResourceActionsDropdown({
   collections,
   resourceTypes,
-  resource
+  resource,
 }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
 

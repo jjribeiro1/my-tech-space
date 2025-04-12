@@ -15,30 +15,25 @@ export default async function DashboardPage() {
           <CreateCollectionDialog />
         </div>
 
-        
-          {collections.length > 0 ? (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {collections.map((collection) => (
-                <CollectionCard key={collection.id} collection={collection!} />
-              ))}
+        {collections.length > 0 ? (
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {collections.map((collection) => (
+              <CollectionCard key={collection.id} collection={collection!} />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-muted/20 flex flex-col items-center justify-center rounded-lg border p-8 text-center">
+            <div className="bg-muted mb-4 flex h-20 w-20 items-center justify-center rounded-full">
+              <FolderPlus className="h-10 w-10" />
             </div>
-          ) : (
-            <div className="bg-muted/20 flex flex-col items-center justify-center rounded-lg border p-8 text-center">
-              <div className="bg-muted mb-4 flex h-20 w-20 items-center justify-center rounded-full">
-                <FolderPlus className="h-10 w-10" />
-              </div>
-              <h3 className="mb-1 text-lg font-medium">
-                No collection created
-              </h3>
-              <p className="text-muted-foreground mb-4 max-w-sm text-sm">
-                Create your first collection to start organizing your resources
-              </p>
-              <Button>Create collection</Button>
-            </div>
-          )}
+            <h3 className="mb-1 text-lg font-medium">No collection created</h3>
+            <p className="text-muted-foreground mb-4 max-w-sm text-sm">
+              Create your first collection to start organizing your resources
+            </p>
+            <Button>Create collection</Button>
+          </div>
+        )}
       </section>
     </article>
   );
 }
-
-

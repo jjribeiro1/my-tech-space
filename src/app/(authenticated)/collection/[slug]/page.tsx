@@ -10,7 +10,10 @@ import {
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ResourceList } from "@/features/resources/components/resource-list";
-import { getAllResourceTypes, getResourcesByCollection } from "@/features/resources/data";
+import {
+  getAllResourceTypes,
+  getResourcesByCollection,
+} from "@/features/resources/data";
 import { getCollectionsFromUser } from "@/features/collection/data";
 
 export default async function CollectionPage({
