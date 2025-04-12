@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createResourceSchema = z.object({
+export const resourceSchema = z.object({
   url: z.string().url({ message: "Invalid url" }),
   title: z.string().min(1, { message: "Title is required" }),
   description: z.string(),
@@ -12,4 +12,4 @@ export const createResourceSchema = z.object({
     .uuid({ message: "Invalid type" }),
 });
 
-export type CreateResourceInput = z.infer<typeof createResourceSchema>;
+export type ResourceInput = z.infer<typeof resourceSchema>;

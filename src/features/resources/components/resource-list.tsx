@@ -1,24 +1,37 @@
+"use client";
+import { useState } from "react";
+import { Plus } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CreateResourceDialog } from "./create-resource-dialog";
+import { Button } from "@/components/ui/button";
+import { ResourceFormDialog } from "./resource-dialog";
 import { ResourceItem } from "./resource-item";
-import { getAllResourceTypes } from "../data";
-import { Resource } from "../types";
+import { Resource, ResourceType } from "../types";
+import { Collection } from "@/features/collection/types";
 
 interface Props {
-  collections: Array<{ id: string; name: string }>;
+  collections: Array<Collection>;
   resources: Array<Resource>;
+  resourceTypes: Array<ResourceType>;
 }
 
-export async function ResourceList({ collections, resources }: Props) {
-  const resourceTypes = await getAllResourceTypes();
+export function ResourceList({ collections, resources, resourceTypes }: Props) {
+  const [openDialog, setOpenDialog] = useState(false);
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <p className="text-xl font-bold tracking-tight">{`Resources (${resources.length})`}</p>
-        <CreateResourceDialog
+        <ResourceFormDialog
           collections={collections}
           resourceTypes={resourceTypes}
+          openDialog={openDialog}
+          setOpenDialog={setOpenDialog}
+          trigger={
+            <Button className="cursor-pointer">
+              <Plus />
+              Add Resource
+            </Button>
+          }
         />
       </div>
 
@@ -35,7 +48,12 @@ export async function ResourceList({ collections, resources }: Props) {
         </TabsList>
         <TabsContent value="all" className="space-y-3">
           {resources.map((resource) => (
-            <ResourceItem key={resource.id} resource={resource} />
+            <ResourceItem
+              key={resource.id}
+              resource={resource}
+              resourceTypes={resourceTypes}
+              collections={collections}
+            />
           ))}
         </TabsContent>
         {resourceTypes.map((rt) => (
@@ -43,7 +61,12 @@ export async function ResourceList({ collections, resources }: Props) {
             {resources
               .filter((r) => r.resourceTypeId === rt.id)
               .map((resource) => (
-                <ResourceItem key={resource.id} resource={resource} />
+                <ResourceItem
+                  key={resource.id}
+                  resource={resource}
+                  resourceTypes={resourceTypes}
+                  collections={collections}
+                />
               ))}
           </TabsContent>
         ))}

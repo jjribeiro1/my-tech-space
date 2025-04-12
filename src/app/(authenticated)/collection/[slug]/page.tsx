@@ -10,8 +10,8 @@ import {
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ResourceList } from "@/features/resources/components/resource-list";
+import { getAllResourceTypes, getResourcesByCollection } from "@/features/resources/data";
 import { getCollectionsFromUser } from "@/features/collection/data";
-import { getResourcesByCollection } from "@/features/resources/data";
 
 export default async function CollectionPage({
   params,
@@ -21,7 +21,10 @@ export default async function CollectionPage({
   const { slug } = await params;
   const collections = await getCollectionsFromUser();
   const collectionFromSlug = collections.find((c) => c.slug === slug);
-  const resourcesFromCollection = await getResourcesByCollection(collectionFromSlug?.id as string)
+  const resourcesFromCollection = await getResourcesByCollection(
+    collectionFromSlug?.id as string,
+  );
+  const resourceTypes = await getAllResourceTypes();
 
   return (
     <>
@@ -68,6 +71,7 @@ export default async function CollectionPage({
         <ResourceList
           collections={collections}
           resources={resourcesFromCollection}
+          resourceTypes={resourceTypes}
         />
       </section>
     </>

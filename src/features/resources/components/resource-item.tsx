@@ -9,13 +9,16 @@ import {
 } from "@/components/ui/card";
 import dayjs from "@/lib/dayjs";
 import ResourceActionsDropdown from "./resource-dropdown-actions";
-import { Resource } from "../types";
+import { Resource, ResourceType } from "../types";
+import { Collection } from "@/features/collection/types";
 
 interface Props {
   resource: Resource;
+  resourceTypes: Array<ResourceType>;
+  collections: Array<Collection>;
 }
 
-export function ResourceItem({ resource }: Props) {
+export function ResourceItem({ resource, resourceTypes, collections }: Props) {
   return (
     <Card className="relative">
       <CardHeader>
@@ -29,7 +32,11 @@ export function ResourceItem({ resource }: Props) {
             <Link href={resource.url!} target="_blank">
               <ExternalLink />
             </Link>
-            <ResourceActionsDropdown />
+            <ResourceActionsDropdown
+              collections={collections}
+              resourceTypes={resourceTypes}
+              resource={resource}
+            />
           </div>
         </div>
       </CardHeader>
