@@ -50,6 +50,13 @@
       "when": 1743949382338,
       "tag": "0006_rename_resource_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1744506040411,
+      "tag": "0007_add_user_to_resource",
+      "breakpoints": true
     }
   ]
 }

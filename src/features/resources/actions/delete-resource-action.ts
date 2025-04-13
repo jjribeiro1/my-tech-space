@@ -6,16 +6,20 @@ import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
-export async function deleteResourceAction(id: string): Promise<ActionResponse> {
+export async function deleteResourceAction(
+  id: string,
+): Promise<ActionResponse> {
   try {
     const session = await getSession();
     if (!session) {
       redirect("/auth/login");
     }
 
-    await db.delete(resources).where(eq(resources.id, id))
+    await db
+      .delete(resources)
+      .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
 
     revalidateTag("delete-resource");
 

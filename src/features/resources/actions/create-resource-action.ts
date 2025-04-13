@@ -37,6 +37,7 @@ export async function createResourceAction(
 
     await db.insert(resources).values({
       ...validatedData.data,
+      userId: session.user.id,
     });
 
     revalidateTag("create-resource");

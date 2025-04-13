@@ -7,7 +7,7 @@ import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -49,7 +49,7 @@ export async function updateResourceAction(
         collectionId,
         resourceTypeId,
       })
-      .where(eq(resources.id, id));
+      .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
 
     revalidateTag("update-resource");
 
