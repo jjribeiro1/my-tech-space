@@ -28,7 +28,7 @@ export default function ResourceActionsDropdown({
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button size={"icon"} variant={"ghost"} className="cursor-pointer">
             <Ellipsis />
