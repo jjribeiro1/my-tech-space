@@ -40,7 +40,7 @@ export async function createCollectionAction(
       slug: slugify(validatedData.data.name),
     });
 
-    revalidateTag("new-collection");
+    revalidateTag("create-collection");
 
     return {
       success: true,
