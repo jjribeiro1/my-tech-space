@@ -5,7 +5,6 @@ import {
   Folder,
   Lock,
   Share2,
-  Trash,
   Unlock,
 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import {
   getResourcesByCollection,
 } from "@/features/resources/data";
 import { getCollectionsFromUser } from "@/features/collection/data";
+import { DeleteCollectionAlert } from "@/features/collection/components/delete-collection-alert";
 
 export default async function CollectionPage({
   params,
@@ -58,10 +58,7 @@ export default async function CollectionPage({
               <Edit />
               Edit
             </Button>
-            <Button variant="outline" size={"sm"}>
-              <Trash />
-              Delete
-            </Button>
+           <DeleteCollectionAlert collectionId={collectionFromSlug?.id as string}/>
           </div>
         </div>
       </section>

@@ -16,7 +16,7 @@ const collectionsFromUser = cache(
     return data;
   },
   [],
-  { revalidate: 60 * 10, tags: ["new-collection"] },
+  { revalidate: 60 * 10, tags: ["new-collection", "delete-collection"] },
 );
 
 export async function getCollectionsFromUser() {
