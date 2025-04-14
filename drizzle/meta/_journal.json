@@ -57,6 +57,13 @@
       "when": 1744506040411,
       "tag": "0007_add_user_to_resource",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1744668071716,
+      "tag": "0008_user_id_name_unique_idx",
+      "breakpoints": true
     }
   ]
 }

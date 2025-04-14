@@ -2,6 +2,7 @@ import * as t from "drizzle-orm/pg-core";
 import { timestamps } from "../helper";
 import { users } from "./users";
 import { uniqueIndex } from "drizzle-orm/pg-core";
+import { sql } from "drizzle-orm";
 
 export const collections = t.pgTable(
   "collections",
@@ -15,6 +16,8 @@ export const collections = t.pgTable(
     ...timestamps,
   },
   (table) => [
-    uniqueIndex("user_id_name_unique_idx").on(table.userId, table.name),
+    uniqueIndex("user_id_name_unique_idx")
+      .on(table.userId, table.name)
+      .where(sql`${table.deleted_at} IS NULL`),
   ],
 );
