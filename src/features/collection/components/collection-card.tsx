@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Folder, Lock } from "lucide-react";
+import { Folder, Lock, Dot } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -7,15 +7,11 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import dayjs from "@/lib/dayjs";
+import { Collection } from "../types";
 
 interface Props {
-  collection: {
-    id: string;
-    name: string;
-    slug: string;
-    description: string | null;
-    isPrivate: boolean;
-  };
+  collection: Collection;
 }
 
 export function CollectionCard({ collection }: Props) {
@@ -38,10 +34,22 @@ export function CollectionCard({ collection }: Props) {
           )}
         </div>
       </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground mb-2 line-clamp-2 text-sm">
+      <CardContent className="flex flex-col gap-y-6">
+        <p className="text-secondary-foreground line-clamp-2 text-sm font-medium">
           {collection.description}
         </p>
+
+        <div className="flex items-center gap-x-0.5">
+          <span className="text-muted-foreground text-xs">
+            {collection.resourceCount > 0
+              ? `${collection.resourceCount} resource${collection.resourceCount > 1 ? "s" : ""}`
+              : "No resource added"}
+          </span>
+          <Dot />
+          <span className="text-muted-foreground text-xs">
+            {`Updated ${dayjs(collection.updated_at ?? collection.created_at).fromNow(false)}`}
+          </span>
+        </div>
       </CardContent>
       <CardFooter>
         <Link

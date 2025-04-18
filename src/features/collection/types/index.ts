@@ -8,4 +8,5 @@ export type Collection = {
   created_at: Date;
   updated_at: Date | null;
   deleted_at: Date | null;
+  resourceCount: number;
 };
