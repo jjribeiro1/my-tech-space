@@ -1,5 +1,4 @@
 import { FolderPlus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { CollectionCard } from "@/features/collection/components/collection-card";
 import { CreateCollectionDialog } from "@/features/collection/components/collection-dialog";
 import { getCollectionsFromUser } from "@/features/collection/data";
@@ -30,7 +29,7 @@ export default async function DashboardPage() {
             <p className="text-muted-foreground mb-4 max-w-sm text-sm">
               Create your first collection to start organizing your resources
             </p>
-            <Button>Create collection</Button>
+            <CreateCollectionDialog />
           </div>
         )}
       </section>
