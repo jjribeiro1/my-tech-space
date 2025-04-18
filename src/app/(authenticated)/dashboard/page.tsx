@@ -2,12 +2,19 @@ import { FolderPlus } from "lucide-react";
 import { CollectionCard } from "@/features/collection/components/collection-card";
 import { CollectionFormDialog } from "@/features/collection/components/collection-dialog";
 import { getCollectionsFromUser } from "@/features/collection/data";
+import {
+  getAllResourceTypes,
+  getLatestResources,
+} from "@/features/resources/data";
+import { LatestResources } from "@/features/resources/components/latest-resources";
 
 export default async function DashboardPage() {
   const collections = await getCollectionsFromUser();
+  const latestResources = await getLatestResources();
+  const resourceTypes = await getAllResourceTypes();
 
   return (
-    <article className="container mx-auto py-6">
+    <article className="container mx-auto flex flex-col gap-y-12 py-6">
       <section className="flex w-full flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold tracking-tight">Collections</h2>
@@ -32,6 +39,14 @@ export default async function DashboardPage() {
             <CollectionFormDialog />
           </div>
         )}
+      </section>
+
+      <section>
+        <LatestResources
+          resources={latestResources}
+          resourceTypes={resourceTypes}
+          collections={collections}
+        />
       </section>
     </article>
   );

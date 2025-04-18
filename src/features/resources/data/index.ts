@@ -63,3 +63,31 @@ export async function getResourcesByCollection(collectionId: string) {
 
   return data;
 }
+
+const latestResources = cache(
+  async (userId: string) => {
+    const data = await db
+      .select()
+      .from(resources)
+      .where(and(eq(resources.userId, userId), isNull(resources.deleted_at)))
+      .orderBy(desc(resources.created_at))
+      .limit(5);
+
+    return data;
+  },
+  [],
+  {
+    tags: ["create-resource", "update-resource", "delete-resource"],
+  },
+);
+
+export async function getLatestResources() {
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
+
+  const data = await latestResources(session.user.id)
+
+  return data
+}
