@@ -41,7 +41,7 @@ interface Props {
   trigger?: React.JSX.Element;
 }
 
-export function CollectionDialog({ collectionToEdit, trigger }: Props) {
+export function CollectionFormDialog({ collectionToEdit, trigger }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();

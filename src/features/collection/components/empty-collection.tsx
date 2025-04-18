@@ -1,6 +1,6 @@
 "use client";
 import { FolderPlus } from "lucide-react";
-import { CreateCollectionDialog } from "./collection-dialog";
+import { CollectionFormDialog } from "./collection-dialog";
 
 export function EmptyCollection() {
   return (
@@ -12,7 +12,7 @@ export function EmptyCollection() {
       <p className="text-muted-foreground mb-4 max-w-sm text-sm">
         Create your first collection to start organizing your resources
       </p>
-      <CreateCollectionDialog />
+      <CollectionFormDialog />
     </div>
   );
 }

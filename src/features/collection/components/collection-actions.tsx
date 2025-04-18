@@ -1,7 +1,7 @@
 import { Share2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteCollectionAlert } from "./delete-collection-alert";
-import { CollectionDialog } from "./collection-dialog";
+import { CollectionFormDialog } from "./collection-dialog";
 import { Collection } from "../types";
 
 interface Props {
@@ -17,7 +17,7 @@ export function CollectionActions({ collection }: Props) {
           Share
         </Button>
 
-        <CollectionDialog
+        <CollectionFormDialog
           key={collection.id + collection.updated_at}
           collectionToEdit={collection}
           trigger={
