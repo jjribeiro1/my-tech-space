@@ -33,6 +33,8 @@ import {
 import { createCollectionAction } from "../actions/create-collection-action";
 import { Collection } from "../types";
 import { updateCollectionAction } from "../actions/update-collection-action";
+import { useRouter } from "next/navigation";
+import { slugify } from "@/lib/utils";
 
 interface Props {
   collectionToEdit?: Collection;
@@ -42,6 +44,7 @@ interface Props {
 export function CollectionDialog({ collectionToEdit, trigger }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<CollectionInput>({
     defaultValues: collectionToEdit
@@ -69,7 +72,10 @@ export function CollectionDialog({ collectionToEdit, trigger }: Props) {
 
       if (action.success) {
         toast.success(action.message);
-        setOpenDialog(false)
+        setOpenDialog(false);
+        if (collectionToEdit && data.name !== collectionToEdit.name) {
+          router.push(`/collection/${slugify(data.name)}`);
+        }
       } else {
         toast.error(action.message);
       }
