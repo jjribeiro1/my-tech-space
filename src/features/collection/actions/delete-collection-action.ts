@@ -20,24 +20,22 @@ export async function deleteCollectionAction(
 
     const now = new Date();
 
-    await db.transaction(async (tx) => {
-      await tx
-        .update(collections)
-        .set({ deleted_at: now })
-        .where(
-          and(eq(collections.id, id), eq(collections.userId, session.user.id)),
-        );
+    await db
+      .update(collections)
+      .set({ deleted_at: now })
+      .where(
+        and(eq(collections.id, id), eq(collections.userId, session.user.id)),
+      );
 
-      await tx
-        .update(resources)
-        .set({ deleted_at: now })
-        .where(
-          and(
-            eq(resources.collectionId, id),
-            eq(resources.userId, session.user.id),
-          ),
-        );
-    });
+    await db
+      .update(resources)
+      .set({ deleted_at: now })
+      .where(
+        and(
+          eq(resources.collectionId, id),
+          eq(resources.userId, session.user.id),
+        ),
+      );
 
     revalidateTag("delete-collection");
 
