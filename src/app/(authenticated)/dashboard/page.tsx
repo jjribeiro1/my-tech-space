@@ -1,6 +1,6 @@
 import { FolderPlus } from "lucide-react";
 import { CollectionCard } from "@/features/collection/components/collection-card";
-import { CreateCollectionDialog } from "@/features/collection/components/collection-dialog";
+import { CollectionDialog } from "@/features/collection/components/collection-dialog";
 import { getCollectionsFromUser } from "@/features/collection/data";
 
 export default async function DashboardPage() {
@@ -11,7 +11,7 @@ export default async function DashboardPage() {
       <section className="flex w-full flex-col gap-4">
         <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold tracking-tight">Collections</h2>
-          <CreateCollectionDialog />
+          <CollectionDialog />
         </div>
 
         {collections.length > 0 ? (
@@ -29,7 +29,7 @@ export default async function DashboardPage() {
             <p className="text-muted-foreground mb-4 max-w-sm text-sm">
               Create your first collection to start organizing your resources
             </p>
-            <CreateCollectionDialog />
+            <CollectionDialog />
           </div>
         )}
       </section>

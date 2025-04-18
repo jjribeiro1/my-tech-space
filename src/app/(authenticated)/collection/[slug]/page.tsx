@@ -1,20 +1,13 @@
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Edit,
-  Folder,
-  Lock,
-  Share2,
-  Unlock,
-} from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { ArrowLeft, Folder, Lock, Unlock } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { ResourceList } from "@/features/resources/components/resource-list";
 import {
   getAllResourceTypes,
   getResourcesByCollection,
 } from "@/features/resources/data";
 import { getCollectionsFromUser } from "@/features/collection/data";
-import { DeleteCollectionAlert } from "@/features/collection/components/delete-collection-alert";
+import { CollectionActions } from "@/features/collection/components/collection-actions";
 
 export default async function CollectionPage({
   params,
@@ -49,17 +42,7 @@ export default async function CollectionPage({
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size={"sm"}>
-              <Share2 />
-              Share
-            </Button>
-            <Button variant="outline" size={"sm"}>
-              <Edit />
-              Edit
-            </Button>
-           <DeleteCollectionAlert collectionId={collectionFromSlug?.id as string}/>
-          </div>
+          <CollectionActions collection={collectionFromSlug!} />
         </div>
       </section>
 

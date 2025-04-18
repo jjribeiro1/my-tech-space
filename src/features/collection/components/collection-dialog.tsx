@@ -1,8 +1,9 @@
 "use client";
-import { useState, useTransition } from "react";
+import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPlus, Lock, Unlock } from "lucide-react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogClose,
@@ -23,34 +24,52 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  CreateCollectionInput,
-  createCollectionSchema,
-} from "../schemas/create-collection-schema";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  CollectionInput,
+  collectionSchema,
+} from "../schemas/create-collection-schema";
 import { createCollectionAction } from "../actions/create-collection-action";
-import { toast } from "sonner";
+import { Collection } from "../types";
+import { updateCollectionAction } from "../actions/update-collection-action";
 
-export function CreateCollectionDialog() {
+interface Props {
+  collectionToEdit?: Collection;
+  trigger?: React.JSX.Element;
+}
+
+export function CollectionDialog({ collectionToEdit, trigger }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<CreateCollectionInput>({
-    defaultValues: {
-      name: "",
-      description: "",
-      isPrivate: false,
-    },
-    resolver: zodResolver(createCollectionSchema),
+  const form = useForm<CollectionInput>({
+    defaultValues: collectionToEdit
+      ? {
+          name: collectionToEdit.name,
+          description: collectionToEdit.description as string,
+          isPrivate: collectionToEdit.isPrivate,
+        }
+      : {
+          name: "",
+          description: "",
+          isPrivate: false,
+        },
+    resolver: zodResolver(collectionSchema),
   });
 
-  function onSubmit(data: CreateCollectionInput) {
+  function onSubmit(data: CollectionInput) {
     startTransition(async () => {
-      const action = await createCollectionAction(data);
+      const action = collectionToEdit
+        ? await updateCollectionAction({
+            id: collectionToEdit?.id,
+            ...data,
+          })
+        : await createCollectionAction(data);
+
       if (action.success) {
         toast.success(action.message);
-        setOpenDialog(false);
+        setOpenDialog(false)
       } else {
         toast.error(action.message);
       }
@@ -65,15 +84,22 @@ export function CreateCollectionDialog() {
         form.reset();
       }}
     >
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="cursor-pointer">
-          <FolderPlus className="mr-2 h-4 w-4" />
-          Create collection
-        </Button>
-      </DialogTrigger>
+      {trigger ? (
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm" className="cursor-pointer">
+            <FolderPlus className="mr-2 h-4 w-4" />
+            Create collection
+          </Button>
+        </DialogTrigger>
+      )}
+
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create new collection</DialogTitle>
+          <DialogTitle>
+            {collectionToEdit ? "Update collection" : "Create new collection"}
+          </DialogTitle>
           <DialogDescription>
             Organize your resources into custom collections.
           </DialogDescription>
@@ -154,7 +180,7 @@ export function CreateCollectionDialog() {
                 disabled={isPending}
               >
                 <FolderPlus />
-                Create collection
+                {collectionToEdit ? "Save changes" : "Create collection"}
               </Button>
             </DialogFooter>
           </form>

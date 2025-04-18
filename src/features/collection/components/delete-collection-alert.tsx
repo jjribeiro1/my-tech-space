@@ -40,7 +40,7 @@ export function DeleteCollectionAlert({ collectionId }: Props) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline" size={"sm"}>
+        <Button className="cursor-pointer" variant="outline" size={"sm"}>
           <Trash />
           Delete
         </Button>
