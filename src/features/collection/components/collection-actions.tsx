@@ -18,6 +18,7 @@ export function CollectionActions({ collection }: Props) {
         </Button>
 
         <CollectionDialog
+          key={collection.id + collection.updated_at}
           collectionToEdit={collection}
           trigger={
             <Button className="cursor-pointer" variant="outline" size={"sm"}>

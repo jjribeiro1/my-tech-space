@@ -44,6 +44,7 @@ export async function updateCollectionAction(
         name,
         description,
         isPrivate,
+        updated_at: new Date(),
         slug: slugify(name),
       })
       .where(
