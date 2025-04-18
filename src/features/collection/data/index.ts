@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache as cache } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { collections } from "@/db/schema/collection";
@@ -31,7 +31,8 @@ const collectionsFromUser = cache(
       .from(collections)
       .where(
         and(eq(collections.userId, userId), isNull(collections.deleted_at)),
-      );
+      )
+      .orderBy(desc(collections.created_at))
 
     return data;
   },
