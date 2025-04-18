@@ -15,7 +15,7 @@ export function LatestResources({
   collections,
 }: Props) {
   return (
-    <div className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4">
       <p className="text-2xl font-bold tracking-tight">Latest Resources</p>
 
       <Tabs defaultValue="all" className="w-full">
@@ -54,6 +54,6 @@ export function LatestResources({
           </TabsContent>
         ))}
       </Tabs>
-    </div>
+    </section>
   );
 }
