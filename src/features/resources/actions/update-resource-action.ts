@@ -48,6 +48,7 @@ export async function updateResourceAction(
         description,
         collectionId,
         resourceTypeId,
+        updated_at: new Date()
       })
       .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
 
