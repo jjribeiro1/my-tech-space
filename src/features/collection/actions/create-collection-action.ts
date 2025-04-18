@@ -8,6 +8,7 @@ import { collections } from "@/db/schema/collection";
 import { getSession } from "@/lib/session";
 import { slugify } from "@/lib/utils";
 import { ActionResponse } from "@/types/action";
+import { NeonDbError } from "@neondatabase/serverless";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -47,10 +48,18 @@ export async function createCollectionAction(
       message: "Collection created successfully",
     };
   } catch (err) {
-    console.error(err);
+    const defaultMessage = "Something went wrong, please try again";
+
+    if (err instanceof NeonDbError) {
+      return {
+        success: false,
+        message:
+          err.constraint === "user_id_name_unique_idx" ? "Collection already exists" : defaultMessage,
+      };
+    }
     return {
       success: false,
-      message: "Something went wrong, please try again",
+      message: defaultMessage,
     };
   }
 }
