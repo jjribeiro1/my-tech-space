@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache as cache } from "next/cache";
 import { redirect } from "next/navigation";
-import { asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { resourceTypes } from "@/db/schema/resource-type";
 import { resources } from "@/db/schema/resource";
@@ -36,7 +36,12 @@ const resourcesByCollection = cache(
     const data = await db
       .select()
       .from(resources)
-      .where(eq(resources.collectionId, collectionId))
+      .where(
+        and(
+          eq(resources.collectionId, collectionId),
+          isNull(resources.deleted_at),
+        ),
+      )
       .orderBy(desc(resources.created_at));
 
     return data;

@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache as cache } from "next/cache";
 import { redirect } from "next/navigation";
-import { eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { collections } from "@/db/schema/collection";
 import { getSession } from "@/lib/session";
@@ -11,7 +11,9 @@ const collectionsFromUser = cache(
     const data = await db
       .select()
       .from(collections)
-      .where(eq(collections.userId, userId));
+      .where(
+        and(eq(collections.userId, userId), isNull(collections.deleted_at)),
+      );
 
     return data;
   },
