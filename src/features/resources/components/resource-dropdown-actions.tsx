@@ -36,6 +36,7 @@ export default function ResourceActionsDropdown({
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem
+            className="cursor-pointer"
             onSelect={(e) => {
               e.preventDefault();
               setOpenResourceFormDialog(true);
@@ -44,6 +45,7 @@ export default function ResourceActionsDropdown({
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem
+            className="cursor-pointer"
             onSelect={(e) => {
               e.preventDefault();
               setOpenDeleteResourceAlert(true);
