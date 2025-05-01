@@ -22,6 +22,11 @@ export const auth = betterAuth({
     github: {
       clientId: process.env.GITHUB_CLIENT_ID as string,
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      mapProfileToUser: (profile) => {
+        return {
+          image: profile.avatar_url,
+        };
+      },
     },
   },
   user: {
@@ -31,6 +36,10 @@ export const auth = betterAuth({
     },
   },
   account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["github"],
+    },
     fields: {
       createdAt: "created_at",
       updatedAt: "updated_at",
