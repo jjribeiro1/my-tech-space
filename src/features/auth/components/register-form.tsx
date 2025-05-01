@@ -25,7 +25,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { GitHubIcon } from "@/components/ui/github-icon";
+import { GithubAuthButton } from "./github-auth";
 import { authClient, getAuthErrorMessage } from "@/lib/auth-client";
 
 export default function RegisterForm() {
@@ -77,10 +77,7 @@ export default function RegisterForm() {
       </CardHeader>
       <Form {...form}>
         <CardContent className="space-y-4">
-          <Button variant="outline" className="w-full cursor-pointer">
-            <GitHubIcon />
-            Continue with GitHub
-          </Button>
+          <GithubAuthButton />
 
           <div className="flex items-center">
             <Separator className="flex-1" />

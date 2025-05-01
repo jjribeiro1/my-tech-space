@@ -18,6 +18,12 @@ export const auth = betterAuth({
     },
     usePlural: true,
   }),
+  socialProviders: {
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    },
+  },
   user: {
     fields: {
       createdAt: "created_at",
@@ -46,5 +52,5 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 6,
   },
-  plugins: [nextCookies()]
+  plugins: [nextCookies()],
 });
