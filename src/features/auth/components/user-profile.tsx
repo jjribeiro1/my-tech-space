@@ -28,7 +28,7 @@ export function UserProfile() {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer">
           <AvatarImage src={session?.user.image ?? ""} />
-          <AvatarFallback>A</AvatarFallback>
+          <AvatarFallback>{session?.user.name.at(0)}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
