@@ -27,6 +27,7 @@ export const auth = betterAuth({
           image: profile.avatar_url,
         };
       },
+      overrideUserInfoOnSignIn: true,
     },
   },
   user: {
