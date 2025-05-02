@@ -11,14 +11,20 @@ import { CollectionActions } from "@/features/collection/components/collection-a
 
 export default async function CollectionPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ isFavorite: string | undefined }>;
 }) {
   const { slug } = await params;
+  const filters = await searchParams;
+
   const collections = await getCollectionsFromUser();
   const collectionFromSlug = collections.find((c) => c.slug === slug);
+
   const resourcesFromCollection = await getResourcesByCollection(
     collectionFromSlug?.id as string,
+    filters,
   );
   const resourceTypes = await getAllResourceTypes();
 

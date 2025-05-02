@@ -33,7 +33,7 @@ export async function getAllResourceTypes() {
 }
 
 const resourcesByCollection = cache(
-  async (collectionId: string) => {
+  async (collectionId: string, filters: GetResourcesFilters) => {
     const data = await db
       .select()
       .from(resources)
@@ -41,6 +41,9 @@ const resourcesByCollection = cache(
         and(
           eq(resources.collectionId, collectionId),
           isNull(resources.deleted_at),
+          filters?.isFavorite === "true"
+            ? eq(resources.isFavorite, true)
+            : undefined,
         ),
       )
       .orderBy(desc(resources.created_at));
@@ -54,13 +57,16 @@ const resourcesByCollection = cache(
   },
 );
 
-export async function getResourcesByCollection(collectionId: string) {
+export async function getResourcesByCollection(
+  collectionId: string,
+  filters: GetResourcesFilters,
+) {
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
 
-  const data = await resourcesByCollection(collectionId);
+  const data = await resourcesByCollection(collectionId, filters);
 
   return data;
 }
@@ -74,7 +80,9 @@ const latestResources = cache(
         and(
           eq(resources.userId, userId),
           isNull(resources.deleted_at),
-          filters?.isFavorite === 'true' ? eq(resources.isFavorite, true) : undefined,
+          filters?.isFavorite === "true"
+            ? eq(resources.isFavorite, true)
+            : undefined,
         ),
       )
       .orderBy(desc(resources.created_at))
