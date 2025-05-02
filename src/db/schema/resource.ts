@@ -9,9 +9,9 @@ export const resources = t.pgTable("resources", {
   title: t.text().notNull(),
   description: t.text(),
   url: t.text(),
+  isFavorite: t.boolean().default(false),
   resourceTypeId: t.uuid().references(() => resourceTypes.id),
   collectionId: t.uuid().references(() => collections.id),
   userId: t.text().references(() => users.id),
-
   ...timestamps,
 });

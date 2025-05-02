@@ -64,6 +64,13 @@
       "when": 1744668071716,
       "tag": "0008_user_id_name_unique_idx",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1746218255084,
+      "tag": "0009_is_favorite_resource",
+      "breakpoints": true
     }
   ]
 }
