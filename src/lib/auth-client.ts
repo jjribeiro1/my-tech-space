@@ -17,6 +17,10 @@ const errorCodes = {
     en: "user already registered",
     es: "usuario ya registrada",
   },
+  INVALID_EMAIL_OR_PASSWORD: {
+    en: "invalid email or password",
+    es: "correo electrónico o contraseña no válidos",
+  },
 } satisfies ErrorTypes;
 
 export const getAuthErrorMessage = (code: string, lang: "en" | "es") => {
