@@ -6,9 +6,14 @@ import {
 import { LatestResources } from "@/features/resources/components/latest-resources";
 import { CollectionList } from "@/features/collection/components/collection-list";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ isFavorite: string | undefined }>;
+}) {
+  const filters = await searchParams;
   const collections = await getCollectionsFromUser();
-  const latestResources = await getLatestResources();
+  const latestResources = await getLatestResources(filters);
   const resourceTypes = await getAllResourceTypes();
 
   return (

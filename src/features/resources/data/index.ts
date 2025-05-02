@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { resourceTypes } from "@/db/schema/resource-type";
 import { resources } from "@/db/schema/resource";
 import { getSession } from "@/lib/session";
+import { GetResourcesFilters } from "./types";
 
 const resourceTypesData = cache(
   async () => {
@@ -65,11 +66,17 @@ export async function getResourcesByCollection(collectionId: string) {
 }
 
 const latestResources = cache(
-  async (userId: string) => {
+  async (userId: string, filters: GetResourcesFilters) => {
     const data = await db
       .select()
       .from(resources)
-      .where(and(eq(resources.userId, userId), isNull(resources.deleted_at)))
+      .where(
+        and(
+          eq(resources.userId, userId),
+          isNull(resources.deleted_at),
+          filters?.isFavorite === 'true' ? eq(resources.isFavorite, true) : undefined,
+        ),
+      )
       .orderBy(desc(resources.created_at))
       .limit(5);
 
@@ -81,13 +88,13 @@ const latestResources = cache(
   },
 );
 
-export async function getLatestResources() {
+export async function getLatestResources(filters: GetResourcesFilters) {
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
 
-  const data = await latestResources(session.user.id)
+  const data = await latestResources(session.user.id, filters);
 
-  return data
+  return data;
 }
