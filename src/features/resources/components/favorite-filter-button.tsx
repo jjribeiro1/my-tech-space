@@ -2,25 +2,50 @@
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryParams } from "@/hooks/use-query-params";
+import { cn } from "@/lib/utils";
 
-export function FavoriteFilterButton() {
+interface Props {
+  favoritesCount: number;
+}
+
+export function FavoriteFilterButton({ favoritesCount }: Props) {
   const { setQueryParam, removeQueryParam, hasQueryParam } = useQueryParams();
+
+  const filterIsActive = hasQueryParam("isFavorite");
+
+  function toggleFilter() {
+    return filterIsActive
+      ? removeQueryParam("isFavorite")
+      : setQueryParam("isFavorite", "true");
+  }
 
   return (
     <Button
-      onClick={() => {
-        if (hasQueryParam("isFavorite")) {
-          removeQueryParam("isFavorite");
-        } else {
-          setQueryParam("isFavorite", "true");
-        }
-      }}
-      variant="outline"
+      onClick={toggleFilter}
+      className={cn(
+        "cursor-pointer gap-2 transition-all",
+        filterIsActive && "bg-yellow-500 text-white hover:bg-yellow-500/80",
+      )}
+      variant={filterIsActive ? "default" : "outline"}
       size="sm"
-      className="cursor-pointer"
     >
-      <Star />
-      Favorites
+      <Star
+        className={cn("h-4 w-4", filterIsActive && "fill-white")}
+        aria-hidden="true"
+      />
+      <span>Favorites</span>
+      {favoritesCount > 0 && (
+        <span
+          className={cn(
+            "rounded-full px-2 py-0.5 text-xs font-medium",
+            filterIsActive
+              ? "bg-white/20 text-white"
+              : "bg-primary/10 text-primary",
+          )}
+        >
+          {favoritesCount}
+        </span>
+      )}
     </Button>
   );
 }

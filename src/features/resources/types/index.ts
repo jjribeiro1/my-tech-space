@@ -3,6 +3,7 @@ export type Resource = {
   title: string;
   description: string | null;
   url: string | null;
+  isFavorite: boolean | null;
   resourceTypeId: string | null;
   collectionId: string | null;
   created_at: Date;

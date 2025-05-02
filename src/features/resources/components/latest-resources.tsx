@@ -26,7 +26,9 @@ export function LatestResources({
         <p className="text-2xl font-bold tracking-tight">Latest Resources</p>
 
         <div className="flex items-end gap-2">
-          <FavoriteFilterButton />
+          <FavoriteFilterButton
+            favoritesCount={resources.filter((r) => r.isFavorite).length}
+          />
 
           <ResourceFormDialog
             collections={collections}
