@@ -42,7 +42,7 @@ export default function RegisterForm() {
   });
 
   async function onSubmit(data: SignupInput) {
-    const { error } = await authClient.signUp.email(
+    await authClient.signUp.email(
       {
         email: data.email,
         password: data.password,
@@ -55,10 +55,10 @@ export default function RegisterForm() {
         onSuccess: () => {
           router.push("/dashboard");
         },
-        onError: () => {
+        onError: (ctx) => {
           setIsLoading(false);
-          if (error?.code) {
-            toast(getAuthErrorMessage(error.code, "en"));
+          if (ctx.error?.code) {
+            toast(getAuthErrorMessage(ctx.error.code, "en"));
             return;
           }
           toast("Something went wrong");
