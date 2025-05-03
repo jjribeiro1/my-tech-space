@@ -1,3 +1,4 @@
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {children}
+        <SpeedInsights/>
         <Toaster closeButton richColors/>
       </body>
     </html>
