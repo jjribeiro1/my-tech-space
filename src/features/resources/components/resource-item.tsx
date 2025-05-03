@@ -11,6 +11,7 @@ import dayjs from "@/lib/dayjs";
 import ResourceActionsDropdown from "./resource-dropdown-actions";
 import { Resource, ResourceType } from "../types";
 import { Collection } from "@/features/collection/types";
+import { ToggleFavoriteResourceButton } from "./toggle-favorite-resource";
 
 interface Props {
   resource: Resource;
@@ -29,6 +30,7 @@ export function ResourceItem({ resource, resourceTypes, collections }: Props) {
           </div>
 
           <div className="flex items-center gap-4">
+            <ToggleFavoriteResourceButton resource={resource} />
             <Link href={resource.url!} target="_blank">
               <ExternalLink />
             </Link>

@@ -53,7 +53,7 @@ const resourcesByCollection = cache(
   [],
   {
     revalidate: 60 * 10,
-    tags: ["create-resource", "update-resource", "delete-resource"],
+    tags: ["create-resource", "update-resource", "delete-resource", "toggle-favorite"],
   },
 );
 
@@ -92,7 +92,7 @@ const latestResources = cache(
   },
   [],
   {
-    tags: ["create-resource", "update-resource", "delete-resource"],
+    tags: ["create-resource", "update-resource", "delete-resource", "toggle-favorite"],
   },
 );
 
