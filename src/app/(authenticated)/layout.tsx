@@ -8,7 +8,7 @@ export default function AuthenticatedLayout({
 }) {
   return (
     <>
-      <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur">
+      <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur px-6">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-0">
           <Link
             href={"/dashboard"}
@@ -20,7 +20,7 @@ export default function AuthenticatedLayout({
           <UserProfile />
         </div>
       </header>
-      <main className="px-4 md:px-0">{children}</main>
+      <main className="px-4 md:px-6">{children}</main>
     </>
   );
 }
