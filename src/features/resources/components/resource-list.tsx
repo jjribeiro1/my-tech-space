@@ -33,9 +33,8 @@ export function ResourceList({ collections, resources, resourceTypes }: Props) {
             openDialog={openDialog}
             setOpenDialog={setOpenDialog}
             trigger={
-              <Button className="cursor-pointer">
-                <Plus />
-                Add Resource
+              <Button variant="outline" size="sm" className="cursor-pointer">
+                <Plus className="mr-2 h-4 w-4" /> Add resource
               </Button>
             }
           />
