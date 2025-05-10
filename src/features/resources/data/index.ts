@@ -53,7 +53,12 @@ const resourcesByCollection = cache(
   [],
   {
     revalidate: 60 * 10,
-    tags: ["create-resource", "update-resource", "delete-resource", "toggle-favorite"],
+    tags: [
+      "create-resource",
+      "update-resource",
+      "delete-resource",
+      "toggle-favorite",
+    ],
   },
 );
 
@@ -71,39 +76,49 @@ export async function getResourcesByCollection(
   return data;
 }
 
-const latestResources = cache(
-  async (userId: string, filters: GetResourcesFilters) => {
-    const data = await db
-      .select()
-      .from(resources)
-      .where(
-        and(
-          eq(resources.userId, userId),
-          isNull(resources.deleted_at),
-          filters?.isFavorite === "true"
-            ? eq(resources.isFavorite, true)
-            : undefined,
-        ),
-      )
-      .orderBy(desc(resources.created_at))
-      .limit(5);
+async function fetchLatestResources(
+  userId: string,
+  filters: GetResourcesFilters,
+) {
+  const data = await db
+    .select()
+    .from(resources)
+    .where(
+      and(
+        eq(resources.userId, userId),
+        isNull(resources.deleted_at),
+        filters?.isFavorite === "true"
+          ? eq(resources.isFavorite, true)
+          : undefined,
+      ),
+    )
+    .orderBy(desc(resources.created_at))
+    .limit(5);
 
-    return data;
-  },
-  [],
-  {
-    tags: ["create-resource", "update-resource", "delete-resource", "toggle-favorite"],
-    revalidate: 60 * 10
-  },
-);
+  return data;
+}
 
 export async function getLatestResources(filters: GetResourcesFilters) {
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
+  const userId = session.user.id;
+  const keyParts = ["latest-resources", userId, JSON.stringify(filters)];
 
-  const data = await latestResources(session.user.id, filters);
+  const cachedFetcher = cache(
+    () => fetchLatestResources(userId, filters),
+    keyParts,
+    {
+      tags: [
+        "create-resource",
+        "update-resource",
+        "delete-resource",
+        "toggle-favorite",
+      ],
+      revalidate: 60 * 10,
+    },
+  );
 
-  return data;
+  return cachedFetcher();
 }
