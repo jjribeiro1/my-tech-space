@@ -93,6 +93,7 @@ const latestResources = cache(
   [],
   {
     tags: ["create-resource", "update-resource", "delete-resource", "toggle-favorite"],
+    revalidate: 60 * 10
   },
 );
 
