@@ -24,6 +24,7 @@ export function CollectionCard({ collection }: Props) {
             <Link
               href={`/collection/${collection.slug}`}
               className="font-medium hover:underline"
+              prefetch={true}
             >
               {collection.name}
             </Link>
