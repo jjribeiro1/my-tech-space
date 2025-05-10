@@ -36,6 +36,7 @@ export default async function CollectionPage({
             <Link
               href={"/dashboard"}
               className={buttonVariants({ variant: "ghost" })}
+              prefetch={true}
             >
               <ArrowLeft />
             </Link>
