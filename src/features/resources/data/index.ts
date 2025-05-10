@@ -8,59 +8,45 @@ import { resources } from "@/db/schema/resource";
 import { getSession } from "@/lib/session";
 import { GetResourcesFilters } from "./types";
 
-const resourceTypesData = cache(
-  async () => {
-    const data = await db
-      .select()
-      .from(resourceTypes)
-      .orderBy(asc(resourceTypes.name));
-
-    return data;
-  },
-  [],
-  { revalidate: 60 * 60, tags: ["new-type"] },
-);
-
-export async function getAllResourceTypes() {
-  const session = await getSession();
-  if (!session) {
-    redirect("/auth/login");
-  }
-
-  const data = await resourceTypesData();
+async function fetchResourceTypes() {
+  const data = await db
+    .select()
+    .from(resourceTypes)
+    .orderBy(asc(resourceTypes.name));
 
   return data;
 }
 
-const resourcesByCollection = cache(
-  async (collectionId: string, filters: GetResourcesFilters) => {
-    const data = await db
-      .select()
-      .from(resources)
-      .where(
-        and(
-          eq(resources.collectionId, collectionId),
-          isNull(resources.deleted_at),
-          filters?.isFavorite === "true"
-            ? eq(resources.isFavorite, true)
-            : undefined,
-        ),
-      )
-      .orderBy(desc(resources.created_at));
+export async function getAllResourceTypes() {
+  const cachedFetcher = cache(() => fetchResourceTypes(), [], {
+    revalidate: 60 * 60,
+  });
 
-    return data;
-  },
-  [],
-  {
-    revalidate: 60 * 10,
-    tags: [
-      "create-resource",
-      "update-resource",
-      "delete-resource",
-      "toggle-favorite",
-    ],
-  },
-);
+  return cachedFetcher();
+}
+
+async function fetchResourcesByCollection(
+  userId: string,
+  collectionId: string,
+  filters: GetResourcesFilters,
+) {
+  const data = await db
+    .select()
+    .from(resources)
+    .where(
+      and(
+        eq(resources.collectionId, collectionId),
+        eq(resources.userId, userId),
+        isNull(resources.deleted_at),
+        filters?.isFavorite === "true"
+          ? eq(resources.isFavorite, true)
+          : undefined,
+      ),
+    )
+    .orderBy(desc(resources.created_at));
+
+  return data;
+}
 
 export async function getResourcesByCollection(
   collectionId: string,
@@ -70,10 +56,24 @@ export async function getResourcesByCollection(
   if (!session) {
     redirect("/auth/login");
   }
+  const userId = session.user.id;
+  const keyParts = [userId, collectionId, JSON.stringify(filters)];
 
-  const data = await resourcesByCollection(collectionId, filters);
+  const cachedFetcher = cache(
+    () => fetchResourcesByCollection(userId, collectionId, filters),
+    keyParts,
+    {
+      revalidate: 60 * 10,
+      tags: [
+        "create-resource",
+        "update-resource",
+        "delete-resource",
+        "toggle-favorite",
+      ],
+    },
+  );
 
-  return data;
+  return cachedFetcher();
 }
 
 async function fetchLatestResources(
