@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, use } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResourceFormDialog } from "./resource-dialog";
@@ -12,14 +12,18 @@ interface Props {
   resources: Array<Resource>;
   resourceTypes: Array<ResourceType>;
   collections: Array<Collection>;
+  favoriteResourcesCountPromise: Promise<number>;
 }
 
 export function LatestResources({
   resources,
   resourceTypes,
   collections,
+  favoriteResourcesCountPromise,
 }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
+  const favoritesCount = use(favoriteResourcesCountPromise)
+
   return (
     <section className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -27,7 +31,7 @@ export function LatestResources({
 
         <div className="flex items-end gap-2">
           <FavoriteFilterButton
-            favoritesCount={resources.filter((r) => r.isFavorite).length}
+            favoritesCount={favoritesCount}
           />
 
           <ResourceFormDialog

@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache as cache } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, asc, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { resourceTypes } from "@/db/schema/resource-type";
 import { resources } from "@/db/schema/resource";
@@ -118,6 +118,39 @@ export async function getLatestResources(filters: GetResourcesFilters) {
       ],
       revalidate: 60 * 10,
     },
+  );
+
+  return cachedFetcher();
+}
+
+async function fetchFavoritesResourceCount(userId: string) {
+  const data = await db
+    .select({ value: count(resources.id) })
+    .from(resources)
+    .where(
+      and(
+        eq(resources.userId, userId),
+        eq(resources.isFavorite, true),
+        isNull(resources.deleted_at),
+      ),
+    );
+
+  return data[0].value;
+}
+
+export async function getFavoritesResourceCount() {
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
+
+  const userId = session.user.id;
+  const keyParts = ["favorites-count", userId];
+
+  const cachedFetcher = cache(
+    () => fetchFavoritesResourceCount(userId),
+    keyParts,
+    { revalidate: 60 * 10, tags: ["update-resource", "delete-resource"] },
   );
 
   return cachedFetcher();
