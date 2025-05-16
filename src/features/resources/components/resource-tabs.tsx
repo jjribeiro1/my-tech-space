@@ -38,7 +38,7 @@ export function ResourceTabs({ collections, resources, resourceTypes }: Props) {
         )}
       </TabsContent>
       {resourceTypes.map((rt) => (
-        <TabsContent key={rt.id} value={rt.id}>
+        <TabsContent key={rt.id} value={rt.id} className="space-y-3">
           {resources.filter((r) => r.resourceTypeId === rt.id).length > 0 ? (
             resources
               .filter((r) => r.resourceTypeId === rt.id)

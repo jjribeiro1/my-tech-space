@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import {
@@ -50,8 +50,16 @@ export function DeleteResourceAlertDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction disabled={isPending} onClick={onSubmit}>Continue</AlertDialogAction>
+          <AlertDialogCancel className="cursor-pointer">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            className="cursor-pointer"
+            disabled={isPending}
+            onClick={onSubmit}
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
