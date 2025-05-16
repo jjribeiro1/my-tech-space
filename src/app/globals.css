@@ -120,5 +120,5 @@
 }
 
 html {
-  scrollbar-gutter: auto;
+  scrollbar-gutter: stable;
 }

@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
 export const metadata: Metadata = {
   title: "My tech space",
@@ -15,12 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
-        {children}
-        <SpeedInsights />
-        <Analytics />
-        <Toaster closeButton richColors />
+        <ThemeProvider attribute="class" defaultTheme="system">
+          {children}
+          <SpeedInsights />
+          <Analytics />
+          <Toaster closeButton richColors />
+        </ThemeProvider>
       </body>
     </html>
   );
