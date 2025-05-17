@@ -1,7 +1,7 @@
 import "server-only";
 import { unstable_cache as cache } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { resourceTypes } from "@/db/schema/resource-type";
 import { resources } from "@/db/schema/resource";
@@ -25,100 +25,54 @@ export async function getAllResourceTypes() {
   return cachedFetcher();
 }
 
-async function fetchResourcesByCollection(
-  userId: string,
-  collectionId: string,
-  filters: GetResourcesFilters,
-) {
+async function fetchResources(userId: string, filters: GetResourcesFilters) {
   const data = await db
     .select()
     .from(resources)
     .where(
       and(
-        eq(resources.collectionId, collectionId),
         eq(resources.userId, userId),
         isNull(resources.deleted_at),
+        filters?.collectionId
+          ? eq(resources.collectionId, filters.collectionId)
+          : undefined,
         filters?.isFavorite === "true"
           ? eq(resources.isFavorite, true)
           : undefined,
-      ),
-    )
-    .orderBy(desc(resources.created_at));
-
-  return data;
-}
-
-export async function getResourcesByCollection(
-  collectionId: string,
-  filters: GetResourcesFilters,
-) {
-  const session = await getSession();
-  if (!session) {
-    redirect("/auth/login");
-  }
-  const userId = session.user.id;
-  const keyParts = [userId, collectionId, JSON.stringify(filters)];
-
-  const cachedFetcher = cache(
-    () => fetchResourcesByCollection(userId, collectionId, filters),
-    keyParts,
-    {
-      revalidate: 60 * 10,
-      tags: [
-        "create-resource",
-        "update-resource",
-        "delete-resource",
-        "toggle-favorite",
-      ],
-    },
-  );
-
-  return cachedFetcher();
-}
-
-async function fetchLatestResources(
-  userId: string,
-  filters: GetResourcesFilters,
-) {
-  const data = await db
-    .select()
-    .from(resources)
-    .where(
-      and(
-        eq(resources.userId, userId),
-        isNull(resources.deleted_at),
-        filters?.isFavorite === "true"
-          ? eq(resources.isFavorite, true)
+        filters?.search && filters.search.length > 0
+          ? ilike(resources.title, `%${filters.search}%`)
           : undefined,
       ),
     )
     .orderBy(desc(resources.created_at))
-    .limit(5);
+    .limit(filters.limit);
 
   return data;
 }
 
-export async function getLatestResources(filters: GetResourcesFilters) {
+export async function getResources(filters: GetResourcesFilters) {
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
   const userId = session.user.id;
-  const keyParts = ["latest-resources", userId, JSON.stringify(filters)];
+  const keyParts = [
+    userId,
+    filters?.collectionId ?? "",
+    filters?.isFavorite ?? "",
+    filters?.search ?? "",
+    String(filters.limit),
+  ];
 
-  const cachedFetcher = cache(
-    () => fetchLatestResources(userId, filters),
-    keyParts,
-    {
-      tags: [
-        "create-resource",
-        "update-resource",
-        "delete-resource",
-        "toggle-favorite",
-      ],
-      revalidate: 60 * 10,
-    },
-  );
+  const cachedFetcher = cache(() => fetchResources(userId, filters), keyParts, {
+    revalidate: 60 * 10,
+    tags: [
+      "create-resource",
+      "update-resource",
+      "delete-resource",
+      "toggle-favorite",
+    ],
+  });
 
   return cachedFetcher();
 }

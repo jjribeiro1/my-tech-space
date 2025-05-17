@@ -2,7 +2,7 @@ import { getCollectionsFromUser } from "@/features/collection/data";
 import {
   getAllResourceTypes,
   getFavoritesResourceCount,
-  getLatestResources,
+  getResources,
 } from "@/features/resources/data";
 import { LatestResources } from "@/features/resources/components/latest-resources";
 import { CollectionList } from "@/features/collection/components/collection-list";
@@ -12,12 +12,21 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ isFavorite: string | undefined }>;
 }) {
-  const filters = await searchParams;
-  const collections = await getCollectionsFromUser();
-  const latestResources = await getLatestResources(filters);
-  const resourceTypes = await getAllResourceTypes();
+  const { isFavorite } = await searchParams;
 
-  const favoritesResourceCountPromise = getFavoritesResourceCount()
+  const collectionsData = getCollectionsFromUser();
+  const resourceTypesData = getAllResourceTypes();
+  const [collections, resourceTypes] = await Promise.all([
+    collectionsData,
+    resourceTypesData,
+  ]);
+
+  const latestResources = await getResources({
+    isFavorite,
+    limit: 5,
+  });
+
+  const favoritesResourceCountPromise = getFavoritesResourceCount();
 
   return (
     <article className="container mx-auto flex flex-col gap-y-12 py-6">

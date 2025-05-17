@@ -2,10 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, Folder, Lock, Unlock } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { ResourceList } from "@/features/resources/components/resource-list";
-import {
-  getAllResourceTypes,
-  getResourcesByCollection,
-} from "@/features/resources/data";
+import { getAllResourceTypes, getResources } from "@/features/resources/data";
 import { getCollectionsFromUser } from "@/features/collection/data";
 import { CollectionActions } from "@/features/collection/components/collection-actions";
 
@@ -14,19 +11,29 @@ export default async function CollectionPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ isFavorite: string | undefined }>;
+  searchParams: Promise<{
+    isFavorite: string | undefined;
+    search: string | undefined;
+  }>;
 }) {
   const { slug } = await params;
-  const filters = await searchParams;
+  const { isFavorite, search } = await searchParams;
 
-  const collections = await getCollectionsFromUser();
+  const collectionsData = getCollectionsFromUser();
+  const resourceTypesData = getAllResourceTypes();
+  const [collections, resourceTypes] = await Promise.all([
+    collectionsData,
+    resourceTypesData,
+  ]);
+
   const collectionFromSlug = collections.find((c) => c.slug === slug);
 
-  const resourcesFromCollection = await getResourcesByCollection(
-    collectionFromSlug?.id as string,
-    filters,
-  );
-  const resourceTypes = await getAllResourceTypes();
+  const resourcesFromCollection = await getResources({
+    collectionId: collectionFromSlug?.id,
+    isFavorite: isFavorite,
+    search,
+    limit: 100000,
+  });
 
   return (
     <>
