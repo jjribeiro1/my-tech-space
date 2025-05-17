@@ -8,7 +8,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 export function SearchResourceInput() {
   const { setQueryParam, removeQueryParam } = useQueryParams();
   const [inputValue, setInputValue] = useState("");
-  const debouncedValue = useDebounce(inputValue, 500);
+  const debouncedValue = useDebounce(inputValue, 400);
 
   useEffect(() => {
     if (debouncedValue === "") {
