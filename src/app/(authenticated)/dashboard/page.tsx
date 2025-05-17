@@ -1,9 +1,5 @@
 import { getCollectionsFromUser } from "@/features/collection/data";
-import {
-  getAllResourceTypes,
-  getFavoritesResourceCount,
-  getResources,
-} from "@/features/resources/data";
+import { getAllResourceTypes, getResources } from "@/features/resources/data";
 import { LatestResources } from "@/features/resources/components/latest-resources";
 import { CollectionList } from "@/features/collection/components/collection-list";
 
@@ -26,8 +22,6 @@ export default async function DashboardPage({
     limit: 5,
   });
 
-  const favoritesResourceCountPromise = getFavoritesResourceCount();
-
   return (
     <article className="container mx-auto flex flex-col gap-y-12 py-6">
       <CollectionList collections={collections} />
@@ -35,7 +29,6 @@ export default async function DashboardPage({
         resources={latestResources}
         resourceTypes={resourceTypes}
         collections={collections}
-        favoriteResourcesCountPromise={favoritesResourceCountPromise}
       />
     </article>
   );
