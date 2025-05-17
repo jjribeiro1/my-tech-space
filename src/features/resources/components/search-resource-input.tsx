@@ -1,8 +1,8 @@
 "use client";
+import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useQueryParams } from "@/hooks/use-query-params";
-import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export function SearchResourceInput() {

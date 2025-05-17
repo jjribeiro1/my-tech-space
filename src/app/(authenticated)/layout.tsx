@@ -20,7 +20,7 @@ export default function AuthenticatedLayout({
 
           <div className="flex items-center gap-x-4">
             <UserProfile />
-            <ThemeToggle/>
+            <ThemeToggle />
           </div>
         </div>
       </header>

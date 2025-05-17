@@ -32,7 +32,9 @@ export function UserProfile() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem className="cursor-pointer" onClick={logout}>Logout</DropdownMenuItem>
+        <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+          Logout
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

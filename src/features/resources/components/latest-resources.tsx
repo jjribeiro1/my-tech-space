@@ -22,7 +22,7 @@ export function LatestResources({
   favoriteResourcesCountPromise,
 }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
-  const favoritesCount = use(favoriteResourcesCountPromise)
+  const favoritesCount = use(favoriteResourcesCountPromise);
 
   return (
     <section className="flex flex-col gap-4">
@@ -30,9 +30,7 @@ export function LatestResources({
         <p className="text-2xl font-bold tracking-tight">Latest Resources</p>
 
         <div className="flex items-end gap-2">
-          <FavoriteFilterButton
-            favoritesCount={favoritesCount}
-          />
+          <FavoriteFilterButton favoritesCount={favoritesCount} />
 
           <ResourceFormDialog
             collections={collections}

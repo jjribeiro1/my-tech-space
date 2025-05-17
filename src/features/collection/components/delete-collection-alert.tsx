@@ -54,8 +54,14 @@ export function DeleteCollectionAlert({ collectionId }: Props) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-          <AlertDialogAction className="cursor-pointer" disabled={isPending} onClick={onSubmit}>
+          <AlertDialogCancel className="cursor-pointer">
+            Cancel
+          </AlertDialogCancel>
+          <AlertDialogAction
+            className="cursor-pointer"
+            disabled={isPending}
+            onClick={onSubmit}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
