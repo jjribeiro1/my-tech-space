@@ -6,6 +6,14 @@ export function useQueryParams() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const getQueryParam = useCallback(
+    (name: string) => {
+      const value = searchParams.get(name);
+      return value;
+    },
+    [searchParams],
+  );
+
   const setQueryParam = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString());
@@ -37,6 +45,7 @@ export function useQueryParams() {
   );
 
   return {
+    getQueryParam,
     setQueryParam,
     removeQueryParam,
     hasQueryParam,

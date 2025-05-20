@@ -6,8 +6,8 @@ import { useQueryParams } from "@/hooks/use-query-params";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export function SearchResourceInput() {
-  const { setQueryParam, removeQueryParam } = useQueryParams();
-  const [inputValue, setInputValue] = useState("");
+  const { setQueryParam, removeQueryParam, getQueryParam } = useQueryParams();
+  const [inputValue, setInputValue] = useState(getQueryParam("search") || "");
   const debouncedValue = useDebounce(inputValue, 400);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export function SearchResourceInput() {
     } else {
       setQueryParam("search", debouncedValue);
     }
-  }, [debouncedValue, setQueryParam, removeQueryParam]);
+  }, [debouncedValue, removeQueryParam, setQueryParam]);
 
   return (
     <div className="relative max-w-md flex-grow">
