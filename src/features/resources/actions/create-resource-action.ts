@@ -40,7 +40,7 @@ export async function createResourceAction(
       userId: session.user.id,
     });
 
-    revalidateTag("create-resource");
+    revalidateTag("create-resource", "max");
 
     return {
       success: true,

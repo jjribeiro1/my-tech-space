@@ -37,7 +37,7 @@ export async function deleteCollectionAction(
         ),
       );
 
-    revalidateTag("delete-collection");
+    revalidateTag("delete-collection", "max");
 
     return {
       success: true,

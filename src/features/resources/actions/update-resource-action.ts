@@ -52,7 +52,7 @@ export async function updateResourceAction(
       })
       .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
 
-    revalidateTag("update-resource");
+    revalidateTag("update-resource", "max");
 
     return {
       success: true,

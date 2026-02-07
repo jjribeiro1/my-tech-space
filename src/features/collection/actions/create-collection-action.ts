@@ -41,7 +41,7 @@ export async function createCollectionAction(
       slug: slugify(validatedData.data.name),
     });
 
-    revalidateTag("create-collection");
+    revalidateTag("create-collection", "max");
 
     return {
       success: true,

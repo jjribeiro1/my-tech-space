@@ -51,7 +51,7 @@ export async function updateCollectionAction(
         and(eq(collections.userId, session.user.id), eq(collections.id, id)),
       );
 
-    revalidateTag("update-collection");
+    revalidateTag("update-collection", "max");
 
     return {
       success: true,

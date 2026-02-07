@@ -21,7 +21,7 @@ export async function deleteResourceAction(
       .delete(resources)
       .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
 
-    revalidateTag("delete-resource");
+    revalidateTag("delete-resource", "max");
 
     return {
       success: true,

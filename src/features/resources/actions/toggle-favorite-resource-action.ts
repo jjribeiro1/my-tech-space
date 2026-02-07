@@ -36,7 +36,7 @@ export async function toggleFavoriteResourceAction(
       .set({ isFavorite: resourceIsFavorite ? false : true })
       .where(and(eq(resources.userId, session.user.id), eq(resources.id, id)));
 
-    revalidateTag("toggle-favorite");
+    revalidateTag("toggle-favorite", "max");
 
     return {
       message: resourceIsFavorite

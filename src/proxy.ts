@@ -4,7 +4,7 @@ import { getSessionCookie } from "better-auth/cookies";
 const protectedRoutes = ["/dashboard"];
 const publicRoutes = ["/auth/login", "/auth/register", "/"];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
