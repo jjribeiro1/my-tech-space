@@ -1,13 +1,10 @@
 import "server-only";
-import { unstable_cache as cache } from "next/cache";
-import { redirect } from "next/navigation";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { collections } from "@/db/schema/collection";
-import { getSession } from "@/lib/session";
 
-async function fetchCollectionsFromUser(userId: string) {
+export async function getCollectionsFromUser(userId: string) {
   const data = await db
     .select({
       id: collections.id,
@@ -33,36 +30,20 @@ async function fetchCollectionsFromUser(userId: string) {
   return data;
 }
 
-async function resolveUserId(userId?: string) {
-  if (userId) {
-    return userId;
-  }
-
-  const session = await getSession();
-  if (!session) {
-    redirect("/auth/login");
-  }
-
-  return session.user.id;
-}
-
-export async function getCollectionsFromUser(userId?: string) {
-  const resolvedUserId = await resolveUserId(userId);
-  const keyParts = ["collectionsFromUser", resolvedUserId];
-  const cachedFetcher = cache(
-    () => fetchCollectionsFromUser(resolvedUserId),
-    keyParts,
-    {
-      revalidate: 60 * 10,
-      tags: [
-        "create-collection",
-        "delete-collection",
-        "update-collection",
-        "create-resource",
-        "delete-resource",
-      ],
-    },
-  );
-
-  return cachedFetcher();
+export async function getCollectionFromUserBySlug(
+  slug: string,
+  userId: string,
+) {
+  const data = await db
+    .select()
+    .from(collections)
+    .where(
+      and(
+        eq(collections.slug, slug),
+        eq(collections.userId, userId),
+        isNull(collections.deleted_at),
+      ),
+    )
+    .limit(1);
+  return data[0];
 }

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { CollectionList } from "@/features/collection/components/collection-list";
 import { getCollectionsFromUser } from "@/features/collection/data";
 import { LatestResources } from "@/features/resources/components/latest-resources";
-import { getAllResourceTypes, getResources } from "@/features/resources/data";
+import { getAllResourceTypes, getResourcesFromUser } from "@/features/resources/data";
 import { getSession } from "@/lib/session";
 
 export default async function DashboardPage({
@@ -21,10 +21,10 @@ export default async function DashboardPage({
   const [collections, resourceTypes, latestResources] = await Promise.all([
     getCollectionsFromUser(userId),
     getAllResourceTypes(),
-    getResources({
+    getResourcesFromUser(userId, {
       isFavorite,
       limit: 5,
-    }, userId),
+    }),
   ]);
 
   return (

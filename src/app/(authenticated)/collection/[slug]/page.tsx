@@ -5,7 +5,10 @@ import { buttonVariants } from "@/components/ui/button";
 import { CollectionActions } from "@/features/collection/components/collection-actions";
 import { getCollectionsFromUser } from "@/features/collection/data";
 import { ResourceList } from "@/features/resources/components/resource-list";
-import { getAllResourceTypes, getResources } from "@/features/resources/data";
+import {
+  getAllResourceTypes,
+  getResourcesFromUser,
+} from "@/features/resources/data";
 import { getSession } from "@/lib/session";
 
 export default async function CollectionPage({
@@ -27,20 +30,18 @@ export default async function CollectionPage({
   }
   const userId = session.user.id;
 
-  const collectionsPromise = getCollectionsFromUser(userId);
-  const resourceTypesPromise = getAllResourceTypes();
-
-  const collections = await collectionsPromise;
+  const collections = await getCollectionsFromUser(userId);
   const collectionFromSlug = collections.find((c) => c.slug === slug);
 
+
   const [resourceTypes, resourcesFromCollection] = await Promise.all([
-    resourceTypesPromise,
-    getResources({
+    getAllResourceTypes(),
+    getResourcesFromUser(userId, {
       collectionId: collectionFromSlug?.id,
       isFavorite: isFavorite,
       search,
       limit: 100000,
-    }, userId),
+    }),
   ]);
 
   return (

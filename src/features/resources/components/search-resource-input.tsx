@@ -19,7 +19,7 @@ export function SearchResourceInput() {
   }, [debouncedValue, removeQueryParam, setQueryParam]);
 
   return (
-    <div className="relative max-w-md flex-grow">
+    <div className="relative max-w-md grow">
       <Search className="text-muted-foreground absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2" />
       <Input
         value={inputValue}
