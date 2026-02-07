@@ -1,8 +1,9 @@
 "use client";
+
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ResourceFormDialog } from "./resource-dialog";
+import { CreateResourceDialog } from "./dialogs/create-resource-dialog";
 import { ResourceTabs } from "./resource-tabs";
 import { Collection } from "@/features/collection/types";
 import { Resource } from "../types";
@@ -21,10 +22,10 @@ export function LatestResources({ resources, collections }: Props) {
         <p className="text-2xl font-bold tracking-tight">Latest Resources</p>
 
         <div className="flex items-end gap-2">
-          <ResourceFormDialog
+          <CreateResourceDialog
             collections={collections}
-            openDialog={openDialog}
-            setOpenDialog={setOpenDialog}
+            open={openDialog}
+            onOpenChange={setOpenDialog}
             trigger={
               <Button variant="outline" size="sm" className="cursor-pointer">
                 <Plus className="mr-2 h-4 w-4" /> Add resource

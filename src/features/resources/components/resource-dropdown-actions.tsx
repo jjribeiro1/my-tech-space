@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { Ellipsis } from "lucide-react";
 import {
@@ -8,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { ResourceFormDialog } from "./resource-dialog";
+import { EditResourceDialog } from "./dialogs/edit-resource-dialog";
 import { Collection } from "@/features/collection/types";
 import { ResourceWithType } from "../data";
 import { DeleteResourceAlertDialog } from "./delete-resource-alert";
@@ -17,6 +18,7 @@ interface Props {
   collections: Array<Collection>;
   resource: ResourceWithType;
 }
+
 export default function ResourceActionsDropdown({
   collections,
   resource,
@@ -28,7 +30,7 @@ export default function ResourceActionsDropdown({
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button size={"icon"} variant={"ghost"} className="cursor-pointer">
+          <Button size="icon" variant="ghost" className="cursor-pointer">
             <Ellipsis />
           </Button>
         </DropdownMenuTrigger>
@@ -54,21 +56,17 @@ export default function ResourceActionsDropdown({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {openResourceFormDialog && (
-        <ResourceFormDialog
-          openDialog={openResourceFormDialog}
-          setOpenDialog={setOpenResourceFormDialog}
-          collections={collections}
-          resourceToEdit={resource}
-        />
-      )}
-      {openDeleteResourceAlert && (
-        <DeleteResourceAlertDialog
-          openDialog={openDeleteResourceAlert}
-          setOpenDialog={setOpenDeleteResourceAlert}
-          resource={resource}
-        />
-      )}
+      <EditResourceDialog
+        resource={resource}
+        collections={collections}
+        open={openResourceFormDialog}
+        onOpenChange={setOpenResourceFormDialog}
+      />
+      <DeleteResourceAlertDialog
+        openDialog={openDeleteResourceAlert}
+        setOpenDialog={setOpenDeleteResourceAlert}
+        resource={resource}
+      />
     </>
   );
 }
