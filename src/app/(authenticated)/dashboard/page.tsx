@@ -10,17 +10,14 @@ export default async function DashboardPage({
 }) {
   const { isFavorite } = await searchParams;
 
-  const collectionsData = getCollectionsFromUser();
-  const resourceTypesData = getAllResourceTypes();
-  const [collections, resourceTypes] = await Promise.all([
-    collectionsData,
-    resourceTypesData,
+  const [collections, resourceTypes, latestResources] = await Promise.all([
+    getCollectionsFromUser(),
+    getAllResourceTypes(),
+    getResources({
+      isFavorite,
+      limit: 5,
+    }),
   ]);
-
-  const latestResources = await getResources({
-    isFavorite,
-    limit: 5,
-  });
 
   return (
     <article className="container mx-auto flex flex-col gap-y-12 py-6">

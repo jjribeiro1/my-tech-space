@@ -19,21 +19,21 @@ export default async function CollectionPage({
   const { slug } = await params;
   const { isFavorite, search } = await searchParams;
 
-  const collectionsData = getCollectionsFromUser();
-  const resourceTypesData = getAllResourceTypes();
-  const [collections, resourceTypes] = await Promise.all([
-    collectionsData,
-    resourceTypesData,
-  ]);
+  const collectionsPromise = getCollectionsFromUser();
+  const resourceTypesPromise = getAllResourceTypes();
 
+  const collections = await collectionsPromise;
   const collectionFromSlug = collections.find((c) => c.slug === slug);
 
-  const resourcesFromCollection = await getResources({
-    collectionId: collectionFromSlug?.id,
-    isFavorite: isFavorite,
-    search,
-    limit: 100000,
-  });
+  const [resourceTypes, resourcesFromCollection] = await Promise.all([
+    resourceTypesPromise,
+    getResources({
+      collectionId: collectionFromSlug?.id,
+      isFavorite: isFavorite,
+      search,
+      limit: 100000,
+    }),
+  ]);
 
   return (
     <>
