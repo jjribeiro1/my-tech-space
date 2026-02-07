@@ -11,6 +11,7 @@ export function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
 
   if (isProtectedRoute && !sessionCookie) {
+    console.error(`Unauthorized access attempt to ${path}`);
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
@@ -20,6 +21,7 @@ export function proxy(request: NextRequest) {
     path !== "/" &&
     !request.nextUrl.pathname.startsWith("/dashboard")
   ) {
+    console.error(`Authenticated user attempting to access public route ${path}`);
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
