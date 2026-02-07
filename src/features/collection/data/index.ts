@@ -1,10 +1,15 @@
 import "server-only";
+import { cacheTag } from "next/cache";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { collections } from "@/db/schema/collection";
 
+export const COLLECTIONS_CACHE_TAG = "collections-from-user";
 export async function getCollectionsFromUser(userId: string) {
+  "use cache";
+  cacheTag(COLLECTIONS_CACHE_TAG);
+
   const data = await db
     .select({
       id: collections.id,
@@ -28,22 +33,4 @@ export async function getCollectionsFromUser(userId: string) {
     .where(and(eq(collections.userId, userId), isNull(collections.deleted_at)))
     .orderBy(desc(collections.created_at));
   return data;
-}
-
-export async function getCollectionFromUserBySlug(
-  slug: string,
-  userId: string,
-) {
-  const data = await db
-    .select()
-    .from(collections)
-    .where(
-      and(
-        eq(collections.slug, slug),
-        eq(collections.userId, userId),
-        isNull(collections.deleted_at),
-      ),
-    )
-    .limit(1);
-  return data[0];
 }

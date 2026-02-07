@@ -1,22 +1,23 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
+import { RESOURCES_CACHE_TAG } from "../data";
 
 export async function toggleFavoriteResourceAction(
   id: string,
 ): Promise<ActionResponse> {
-  try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
 
+  try {
     const resource = await db
       .select({ isFavorite: resources.isFavorite })
       .from(resources)
@@ -36,7 +37,7 @@ export async function toggleFavoriteResourceAction(
       .set({ isFavorite: resourceIsFavorite ? false : true })
       .where(and(eq(resources.userId, session.user.id), eq(resources.id, id)));
 
-    revalidateTag("toggle-favorite", "max");
+    updateTag(RESOURCES_CACHE_TAG); 
 
     return {
       message: resourceIsFavorite

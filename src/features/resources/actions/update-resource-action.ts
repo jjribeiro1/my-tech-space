@@ -1,13 +1,14 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
 import { eq, and } from "drizzle-orm";
+import { RESOURCES_CACHE_TAG } from "../data";
 
 const schema = z.object({
   id: z.string().uuid(),
@@ -23,20 +24,21 @@ type Input = z.infer<typeof schema>;
 export async function updateResourceAction(
   data: Input,
 ): Promise<ActionResponse> {
+  const validatedData = schema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      message: "Something went wrong, invalid data",
+    };
+  }
+
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
+
   try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
-    const validatedData = schema.safeParse(data);
-
-    if (!validatedData.success) {
-      return {
-        success: false,
-        message: "Something went wrong, invalid data",
-      };
-    }
-
     const { id, title, description, url, collectionId, resourceTypeId } =
       validatedData.data;
 
@@ -48,11 +50,11 @@ export async function updateResourceAction(
         description,
         collectionId,
         resourceTypeId,
-        updated_at: new Date()
+        updated_at: new Date(),
       })
       .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
 
-    revalidateTag("update-resource", "max");
+    updateTag(RESOURCES_CACHE_TAG);
 
     return {
       success: true,

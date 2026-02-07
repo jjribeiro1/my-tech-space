@@ -1,23 +1,24 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { db } from "@/db";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
 import { and, eq } from "drizzle-orm";
 import { collections } from "@/db/schema/collection";
 import { resources } from "@/db/schema/resource";
+import { COLLECTIONS_CACHE_TAG } from "../data";
 
 export async function deleteCollectionAction(
   id: string,
 ): Promise<ActionResponse> {
-  try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
 
+  try {
     const now = new Date();
 
     await db
@@ -37,7 +38,7 @@ export async function deleteCollectionAction(
         ),
       );
 
-    revalidateTag("delete-collection", "max");
+    updateTag(COLLECTIONS_CACHE_TAG);
 
     return {
       success: true,

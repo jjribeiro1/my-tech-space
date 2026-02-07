@@ -1,7 +1,7 @@
 "use server";
 import "server-only";
 import { redirect } from "next/navigation";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { collections } from "@/db/schema/collection";
@@ -9,6 +9,7 @@ import { getSession } from "@/lib/session";
 import { slugify } from "@/lib/utils";
 import { ActionResponse } from "@/types/action";
 import { NeonDbError } from "@neondatabase/serverless";
+import { COLLECTIONS_CACHE_TAG } from "../data";
 
 const schema = z.object({
   name: z.string().min(1, { message: "Name is required" }),
@@ -21,27 +22,28 @@ type Input = z.infer<typeof schema>;
 export async function createCollectionAction(
   data: Input,
 ): Promise<ActionResponse> {
+  const validatedData = schema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      message: "Something went wrong, invalid data",
+    };
+  }
+
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
+
   try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
-    const validatedData = schema.safeParse(data);
-
-    if (!validatedData.success) {
-      return {
-        success: false,
-        message: "Something went wrong, invalid data",
-      };
-    }
-
     await db.insert(collections).values({
       userId: session.user.id,
       ...validatedData.data,
       slug: slugify(validatedData.data.name),
     });
 
-    revalidateTag("create-collection", "max");
+    updateTag(COLLECTIONS_CACHE_TAG);
 
     return {
       success: true,
@@ -54,7 +56,9 @@ export async function createCollectionAction(
       return {
         success: false,
         message:
-          err.constraint === "user_id_name_unique_idx" ? "Collection already exists" : defaultMessage,
+          err.constraint === "user_id_name_unique_idx"
+            ? "Collection already exists"
+            : defaultMessage,
       };
     }
     return {
