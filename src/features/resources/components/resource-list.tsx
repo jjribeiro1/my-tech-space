@@ -7,15 +7,14 @@ import { ResourceTabs } from "./resource-tabs";
 import { FavoriteFilterButton } from "./favorite-filter-button";
 import { SearchResourceInput } from "./search-resource-input";
 import { Collection } from "@/features/collection/types";
-import { Resource, ResourceType } from "../types";
+import { ResourceWithType } from "../data";
 
 interface Props {
   collections: Array<Collection>;
-  resources: Array<Resource>;
-  resourceTypes: Array<ResourceType>;
+  resources: Array<ResourceWithType>;
 }
 
-export function ResourceList({ collections, resources, resourceTypes }: Props) {
+export function ResourceList({ collections, resources }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
 
   return (
@@ -32,7 +31,6 @@ export function ResourceList({ collections, resources, resourceTypes }: Props) {
 
           <ResourceFormDialog
             collections={collections}
-            resourceTypes={resourceTypes}
             openDialog={openDialog}
             setOpenDialog={setOpenDialog}
             trigger={
@@ -44,11 +42,7 @@ export function ResourceList({ collections, resources, resourceTypes }: Props) {
         </div>
       </div>
 
-      <ResourceTabs
-        collections={collections}
-        resources={resources}
-        resourceTypes={resourceTypes}
-      />
+      <ResourceTabs collections={collections} resources={resources} />
     </div>
   );
 }

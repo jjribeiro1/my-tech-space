@@ -5,10 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { CollectionActions } from "@/features/collection/components/collection-actions";
 import { getCollectionsFromUser } from "@/features/collection/data";
 import { ResourceList } from "@/features/resources/components/resource-list";
-import {
-  getAllResourceTypes,
-  getResourcesFromUser,
-} from "@/features/resources/data";
+import { getResourcesFromUser } from "@/features/resources/data";
 import { getSession } from "@/lib/session";
 
 export default async function CollectionPage({
@@ -30,10 +27,7 @@ export default async function CollectionPage({
   }
   const userId = session.user.id;
 
-  const [collections, resourceTypes] = await Promise.all([
-    getCollectionsFromUser(userId),
-    getAllResourceTypes(),
-  ]);
+  const collections = await getCollectionsFromUser(userId);
 
   const collectionFromSlug = collections.find((c) => c.slug === slug);
 
@@ -43,8 +37,6 @@ export default async function CollectionPage({
     search,
     limit: 100000,
   });
-
-  // return <div>Collection Page</div>;
 
   return (
     <>
@@ -79,7 +71,6 @@ export default async function CollectionPage({
         <ResourceList
           collections={collections}
           resources={resourcesFromCollection}
-          resourceTypes={resourceTypes}
         />
       </section>
     </>

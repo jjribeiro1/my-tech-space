@@ -2,24 +2,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResourceItem } from "./resource-item";
 import { ResourceTabEmpty } from "./empty-tab-resource";
 import { Collection } from "@/features/collection/types";
-import { Resource, ResourceType } from "../types";
+import { ResourceWithType } from "../data";
+import { AVAILABLE_RESOURCE_TYPES } from "../constants/resource-types";
 
 interface Props {
   collections: Array<Collection>;
-  resources: Array<Resource>;
-  resourceTypes: Array<ResourceType>;
+  resources: Array<ResourceWithType>;
 }
 
-export function ResourceTabs({ collections, resources, resourceTypes }: Props) {
+export function ResourceTabs({ collections, resources }: Props) {
   return (
     <Tabs defaultValue="all" className="w-full">
       <TabsList className="gap-2">
         <TabsTrigger value="all" className="cursor-pointer">
           All
         </TabsTrigger>
-        {resourceTypes.map((rt) => (
-          <TabsTrigger key={rt.id} value={rt.id} className="cursor-pointer">
-            {rt.name}
+        {AVAILABLE_RESOURCE_TYPES.map((rt) => (
+          <TabsTrigger
+            key={rt.value}
+            value={rt.value}
+            className="cursor-pointer"
+          >
+            {rt.label}
           </TabsTrigger>
         ))}
       </TabsList>
@@ -29,7 +33,6 @@ export function ResourceTabs({ collections, resources, resourceTypes }: Props) {
             <ResourceItem
               key={resource.id}
               resource={resource}
-              resourceTypes={resourceTypes}
               collections={collections}
             />
           ))
@@ -37,21 +40,20 @@ export function ResourceTabs({ collections, resources, resourceTypes }: Props) {
           <ResourceTabEmpty />
         )}
       </TabsContent>
-      {resourceTypes.map((rt) => (
-        <TabsContent key={rt.id} value={rt.id} className="space-y-3">
-          {resources.filter((r) => r.resourceTypeId === rt.id).length > 0 ? (
+      {AVAILABLE_RESOURCE_TYPES.map((rt) => (
+        <TabsContent key={rt.value} value={rt.value} className="space-y-3">
+          {resources.filter((r) => r.type === rt.value).length > 0 ? (
             resources
-              .filter((r) => r.resourceTypeId === rt.id)
+              .filter((r) => r.type === rt.value)
               .map((resource) => (
                 <ResourceItem
                   key={resource.id}
                   resource={resource}
-                  resourceTypes={resourceTypes}
                   collections={collections}
                 />
               ))
           ) : (
-            <ResourceTabEmpty resourceType={rt} />
+            <ResourceTabEmpty typeLabel={rt.label} />
           )}
         </TabsContent>
       ))}

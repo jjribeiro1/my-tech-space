@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toggleFavoriteResourceAction } from "../actions/toggle-favorite-resource-action";
 import { toast } from "sonner";
-import { Resource } from "../types";
+import { ResourceWithType } from "../data";
 
 interface Props {
-  resource: Resource;
+  resource: ResourceWithType;
 }
 
 export function ToggleFavoriteResourceButton({ resource }: Props) {

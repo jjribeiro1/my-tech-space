@@ -12,12 +12,12 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteResourceAction } from "../actions/delete-resource-action";
-import { Resource } from "../types";
+import { ResourceWithType } from "../data";
 
 interface Props {
   openDialog: boolean;
   setOpenDialog: (value: boolean) => void;
-  resource: Resource;
+  resource: ResourceWithType;
 }
 
 export function DeleteResourceAlertDialog({

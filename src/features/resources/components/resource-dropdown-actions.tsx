@@ -10,17 +10,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { ResourceFormDialog } from "./resource-dialog";
 import { Collection } from "@/features/collection/types";
-import { Resource, ResourceType } from "../types";
+import { ResourceWithType } from "../data";
 import { DeleteResourceAlertDialog } from "./delete-resource-alert";
 
 interface Props {
   collections: Array<Collection>;
-  resourceTypes: Array<ResourceType>;
-  resource: Resource;
+  resource: ResourceWithType;
 }
 export default function ResourceActionsDropdown({
   collections,
-  resourceTypes,
   resource,
 }: Props) {
   const [openResourceFormDialog, setOpenResourceFormDialog] = useState(false);
@@ -61,7 +59,6 @@ export default function ResourceActionsDropdown({
           openDialog={openResourceFormDialog}
           setOpenDialog={setOpenResourceFormDialog}
           collections={collections}
-          resourceTypes={resourceTypes}
           resourceToEdit={resource}
         />
       )}

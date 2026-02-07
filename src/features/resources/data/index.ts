@@ -1,24 +1,36 @@
 import "server-only";
 import { cacheTag } from "next/cache";
-import { and, asc, desc, eq, ilike, isNull } from "drizzle-orm";
+import { and, desc, eq, ilike, isNull } from "drizzle-orm";
 import { db } from "@/db";
-import { resourceTypes } from "@/db/schema/resource-type";
 import { resources } from "@/db/schema/resource";
+import { resourceLinks } from "@/db/schema/resource-link";
+import { resourceCodeSnippets } from "@/db/schema/resource-code-snippet";
 import { GetResourcesFilters } from "./types";
 
 export const RESOURCES_CACHE_TAG = "resources-from-user";
-export const RESOURCE_TYPES_CACHE_TAG = "resource-types";
 
-export async function getAllResourceTypes() {
-  "use cache";
-  cacheTag(RESOURCE_TYPES_CACHE_TAG);
-  const data = await db
-    .select()
-    .from(resourceTypes)
-    .orderBy(asc(resourceTypes.name));
+export type ResourceLinkData = {
+  type: "link";
+  link: {
+    id: string;
+    url: string;
+    faviconUrl: string | null;
+  };
+};
 
-  return data;
-}
+export type ResourceCodeSnippetData = {
+  type: "code_snippet";
+  codeSnippet: {
+    id: string;
+    code: string;
+    language: string;
+    filename: string | null;
+  };
+};
+
+export type ResourceWithType =
+  | (typeof resources.$inferSelect & ResourceLinkData)
+  | (typeof resources.$inferSelect & ResourceCodeSnippetData);
 
 export async function getResourcesFromUser(
   userId: string,
@@ -27,9 +39,18 @@ export async function getResourcesFromUser(
   "use cache";
   cacheTag(RESOURCES_CACHE_TAG);
 
-  const data = await db
-    .select()
+  const baseQuery = db
+    .select({
+      resource: resources,
+      link: resourceLinks,
+      codeSnippet: resourceCodeSnippets,
+    })
     .from(resources)
+    .leftJoin(resourceLinks, eq(resourceLinks.resourceId, resources.id))
+    .leftJoin(
+      resourceCodeSnippets,
+      eq(resourceCodeSnippets.resourceId, resources.id),
+    )
     .where(
       and(
         eq(resources.userId, userId),
@@ -48,5 +69,36 @@ export async function getResourcesFromUser(
     .orderBy(desc(resources.created_at))
     .limit(filters.limit);
 
-  return data;
+  const data = await baseQuery;
+
+  return data.map((row) => {
+    const base = row.resource;
+
+    if (base.type === "link" && row.link) {
+      return {
+        ...base,
+        type: "link" as const,
+        link: {
+          id: row.link.id,
+          url: row.link.url,
+          faviconUrl: row.link.faviconUrl,
+        },
+      };
+    }
+
+    if (base.type === "code_snippet" && row.codeSnippet) {
+      return {
+        ...base,
+        type: "code_snippet" as const,
+        codeSnippet: {
+          id: row.codeSnippet.id,
+          code: row.codeSnippet.code,
+          language: row.codeSnippet.language,
+          filename: row.codeSnippet.filename,
+        },
+      };
+    }
+
+    return base as ResourceWithType;
+  });
 }

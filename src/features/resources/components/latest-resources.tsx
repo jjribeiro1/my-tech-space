@@ -5,19 +5,14 @@ import { Button } from "@/components/ui/button";
 import { ResourceFormDialog } from "./resource-dialog";
 import { ResourceTabs } from "./resource-tabs";
 import { Collection } from "@/features/collection/types";
-import { Resource, ResourceType } from "../types";
+import { Resource } from "../types";
 
 interface Props {
   resources: Array<Resource>;
-  resourceTypes: Array<ResourceType>;
   collections: Array<Collection>;
 }
 
-export function LatestResources({
-  resources,
-  resourceTypes,
-  collections,
-}: Props) {
+export function LatestResources({ resources, collections }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
 
   return (
@@ -28,7 +23,6 @@ export function LatestResources({
         <div className="flex items-end gap-2">
           <ResourceFormDialog
             collections={collections}
-            resourceTypes={resourceTypes}
             openDialog={openDialog}
             setOpenDialog={setOpenDialog}
             trigger={
@@ -40,11 +34,7 @@ export function LatestResources({
         </div>
       </div>
 
-      <ResourceTabs
-        collections={collections}
-        resources={resources}
-        resourceTypes={resourceTypes}
-      />
+      <ResourceTabs collections={collections} resources={resources} />
     </section>
   );
 }

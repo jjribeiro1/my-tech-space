@@ -71,6 +71,13 @@
       "when": 1746218255084,
       "tag": "0009_is_favorite_resource",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1770505738156,
+      "tag": "0010_wild_the_phantom",
+      "breakpoints": true
     }
   ]
 }

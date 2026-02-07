@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, Code } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -9,34 +9,41 @@ import {
 } from "@/components/ui/card";
 import dayjs from "@/lib/dayjs";
 import ResourceActionsDropdown from "./resource-dropdown-actions";
-import { Resource, ResourceType } from "../types";
+import { ResourceWithType } from "../data";
 import { Collection } from "@/features/collection/types";
 import { ToggleFavoriteResourceButton } from "./toggle-favorite-resource";
 
 interface Props {
-  resource: Resource;
-  resourceTypes: Array<ResourceType>;
+  resource: ResourceWithType;
   collections: Array<Collection>;
 }
 
-export function ResourceItem({ resource, resourceTypes, collections }: Props) {
+export function ResourceItem({ resource, collections }: Props) {
   return (
     <Card className="relative">
       <CardHeader>
         <div className="flex w-full justify-between">
           <div>
-            <CardTitle>{resource.title}</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              {resource.type === "link" ? (
+                <ExternalLink className="h-4 w-4" />
+              ) : (
+                <Code className="h-4 w-4" />
+              )}
+              {resource.title}
+            </CardTitle>
             <CardDescription>{resource.description}</CardDescription>
           </div>
 
           <div className="flex items-center gap-4">
             <ToggleFavoriteResourceButton resource={resource} />
-            <Link href={resource.url!} target="_blank">
-              <ExternalLink />
-            </Link>
+            {resource.type === "link" && (
+              <Link href={resource.link.url} target="_blank">
+                <ExternalLink className="h-5 w-5" />
+              </Link>
+            )}
             <ResourceActionsDropdown
               collections={collections}
-              resourceTypes={resourceTypes}
               resource={resource}
             />
           </div>

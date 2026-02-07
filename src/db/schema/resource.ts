@@ -1,16 +1,19 @@
 import * as t from "drizzle-orm/pg-core";
-import { resourceTypes } from "./resource-type";
 import { timestamps } from "../helper";
 import { collections } from "./collection";
 import { users } from "./users";
+
+export const resourceTypeEnum = t.pgEnum("resource_type", [
+  "link",
+  "code_snippet",
+]);
 
 export const resources = t.pgTable("resources", {
   id: t.uuid().primaryKey().defaultRandom(),
   title: t.text().notNull(),
   description: t.text(),
-  url: t.text(),
+  type: resourceTypeEnum().notNull(),
   isFavorite: t.boolean().default(false),
-  resourceTypeId: t.uuid().references(() => resourceTypes.id),
   collectionId: t.uuid().references(() => collections.id),
   userId: t.text().references(() => users.id),
   ...timestamps,

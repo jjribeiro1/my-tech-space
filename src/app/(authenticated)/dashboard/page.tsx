@@ -2,10 +2,7 @@ import { redirect } from "next/navigation";
 import { CollectionList } from "@/features/collection/components/collection-list";
 import { getCollectionsFromUser } from "@/features/collection/data";
 import { LatestResources } from "@/features/resources/components/latest-resources";
-import {
-  getAllResourceTypes,
-  getResourcesFromUser,
-} from "@/features/resources/data";
+import { getResourcesFromUser } from "@/features/resources/data";
 import { getSession } from "@/lib/session";
 
 export default async function DashboardPage({
@@ -21,9 +18,8 @@ export default async function DashboardPage({
   }
   const userId = session.user.id;
 
-  const [collections, resourceTypes, latestResources] = await Promise.all([
+  const [collections, latestResources] = await Promise.all([
     getCollectionsFromUser(userId),
-    getAllResourceTypes(),
     getResourcesFromUser(userId, {
       isFavorite,
       limit: 5,
@@ -33,11 +29,7 @@ export default async function DashboardPage({
   return (
     <article className="container mx-auto flex flex-col gap-y-12 py-6">
       <CollectionList collections={collections} />
-      <LatestResources
-        resources={latestResources}
-        resourceTypes={resourceTypes}
-        collections={collections}
-      />
+      <LatestResources resources={latestResources} collections={collections} />
     </article>
   );
 }

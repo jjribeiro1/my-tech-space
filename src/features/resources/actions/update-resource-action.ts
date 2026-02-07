@@ -2,57 +2,72 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { updateTag } from "next/cache";
-import { z } from "zod";
+import { eq, and } from "drizzle-orm";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
+import { resourceLinks } from "@/db/schema/resource-link";
+import { resourceCodeSnippets } from "@/db/schema/resource-code-snippet";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
-import { eq, and } from "drizzle-orm";
 import { RESOURCES_CACHE_TAG } from "../data";
-
-const schema = z.object({
-  id: z.string().uuid(),
-  url: z.string().url({ message: "Invalid url" }),
-  title: z.string().min(1, { message: "Title is required" }),
-  description: z.string(),
-  collectionId: z.string().uuid(),
-  resourceTypeId: z.string().uuid(),
-});
-
-type Input = z.infer<typeof schema>;
+import {
+  LinkResourceInput,
+  CodeSnippetResourceInput,
+} from "../schemas/resource-schema";
 
 export async function updateResourceAction(
-  data: Input,
+  data: { id: string } & (LinkResourceInput | CodeSnippetResourceInput),
 ): Promise<ActionResponse> {
-  const validatedData = schema.safeParse(data);
-
-  if (!validatedData.success) {
-    return {
-      success: false,
-      message: "Something went wrong, invalid data",
-    };
-  }
-
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
 
   try {
-    const { id, title, description, url, collectionId, resourceTypeId } =
-      validatedData.data;
+    const { id, type, title, description, collectionId } = data;
 
     await db
       .update(resources)
       .set({
         title,
-        url,
-        description,
-        collectionId,
-        resourceTypeId,
+        description: description || null,
+        collectionId: collectionId || null,
         updated_at: new Date(),
       })
       .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
+
+    if (type === "link") {
+      await db
+        .update(resourceLinks)
+        .set({
+          url: data.url,
+          faviconUrl: data.faviconUrl || null,
+        })
+        .where(eq(resourceLinks.resourceId, id));
+    } else if (type === "code_snippet") {
+      const existingSnippet = await db
+        .select({ id: resourceCodeSnippets.id })
+        .from(resourceCodeSnippets)
+        .where(eq(resourceCodeSnippets.resourceId, id));
+
+      if (existingSnippet.length > 0) {
+        await db
+          .update(resourceCodeSnippets)
+          .set({
+            code: data.code,
+            language: data.language,
+            filename: data.filename || null,
+          })
+          .where(eq(resourceCodeSnippets.resourceId, id));
+      } else {
+        await db.insert(resourceCodeSnippets).values({
+          resourceId: id,
+          code: data.code,
+          language: data.language,
+          filename: data.filename || null,
+        });
+      }
+    }
 
     updateTag(RESOURCES_CACHE_TAG);
 
