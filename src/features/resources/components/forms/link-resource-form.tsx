@@ -49,14 +49,12 @@ export function LinkResourceForm({
           description: resourceToEdit.description ?? "",
           collectionId: resourceToEdit.collectionId ?? "",
           url: resourceToEdit.link.url,
-          faviconUrl: resourceToEdit.link.faviconUrl ?? "",
         }
       : {
           title: "",
           description: "",
           collectionId: "",
           url: "",
-          faviconUrl: "",
         },
     resolver: zodResolver(linkResourceSchema),
   });
@@ -93,23 +91,6 @@ export function LinkResourceForm({
               <FormControl>
                 <Input
                   placeholder="https://app.daily.dev/posts/svuczj4ra"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="faviconUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Favicon URL (optional)</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="https://example.com/favicon.ico"
                   {...field}
                 />
               </FormControl>

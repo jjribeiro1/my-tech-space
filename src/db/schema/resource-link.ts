@@ -8,5 +8,4 @@ export const resourceLinks = t.pgTable("resource_links", {
     .references(() => resources.id, { onDelete: "cascade" })
     .notNull(),
   url: t.text().notNull(),
-  faviconUrl: t.text(),
 });

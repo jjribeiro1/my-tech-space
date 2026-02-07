@@ -14,7 +14,6 @@ export type ResourceLinkData = {
   link: {
     id: string;
     url: string;
-    faviconUrl: string | null;
   };
 };
 
@@ -81,7 +80,6 @@ export async function getResourcesFromUser(
         link: {
           id: row.link.id,
           url: row.link.url,
-          faviconUrl: row.link.faviconUrl,
         },
       };
     }

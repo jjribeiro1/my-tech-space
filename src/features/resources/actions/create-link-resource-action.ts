@@ -20,7 +20,7 @@ export async function createLinkResourceAction(
   }
 
   try {
-    const { title, description, collectionId, url, faviconUrl } = data;
+    const { title, description, collectionId, url } = data;
 
     const [resource] = await db
       .insert(resources)
@@ -36,7 +36,6 @@ export async function createLinkResourceAction(
     await db.insert(resourceLinks).values({
       resourceId: resource.id,
       url,
-      faviconUrl: faviconUrl || null,
     });
 
     updateTag(RESOURCES_CACHE_TAG);

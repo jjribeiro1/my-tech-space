@@ -1,0 +1,1 @@
+ALTER TABLE "resource_links" DROP COLUMN "favicon_url";

@@ -22,7 +22,7 @@ export async function updateLinkResourceAction(
   }
 
   try {
-    const { title, description, collectionId, url, faviconUrl } = data;
+    const { title, description, collectionId, url } = data;
 
     await db
       .update(resources)
@@ -38,7 +38,6 @@ export async function updateLinkResourceAction(
       .update(resourceLinks)
       .set({
         url,
-        faviconUrl: faviconUrl || null,
       })
       .where(eq(resourceLinks.resourceId, id));
 
