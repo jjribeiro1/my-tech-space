@@ -62,5 +62,6 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 6,
   },
+  trustedOrigins: [process.env.NEXT_PUBLIC_BASE_URL as string],
   plugins: [nextCookies()],
 });
