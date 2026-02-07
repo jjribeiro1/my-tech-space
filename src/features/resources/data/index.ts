@@ -50,29 +50,45 @@ async function fetchResources(userId: string, filters: GetResourcesFilters) {
   return data;
 }
 
-export async function getResources(filters: GetResourcesFilters) {
+async function resolveUserId(userId?: string) {
+  if (userId) {
+    return userId;
+  }
+
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
-  const userId = session.user.id;
+
+  return session.user.id;
+}
+
+export async function getResources(
+  filters: GetResourcesFilters,
+  userId?: string,
+) {
+  const resolvedUserId = await resolveUserId(userId);
   const keyParts = [
-    userId,
+    resolvedUserId,
     filters?.collectionId ?? "",
     filters?.isFavorite ?? "",
     filters?.search ?? "",
     String(filters.limit),
   ];
 
-  const cachedFetcher = cache(() => fetchResources(userId, filters), keyParts, {
-    revalidate: 60 * 10,
-    tags: [
-      "create-resource",
-      "update-resource",
-      "delete-resource",
-      "toggle-favorite",
-    ],
-  });
+  const cachedFetcher = cache(
+    () => fetchResources(resolvedUserId, filters),
+    keyParts,
+    {
+      revalidate: 60 * 10,
+      tags: [
+        "create-resource",
+        "update-resource",
+        "delete-resource",
+        "toggle-favorite",
+      ],
+    },
+  );
 
   return cachedFetcher();
 }

@@ -1,7 +1,9 @@
-import { getCollectionsFromUser } from "@/features/collection/data";
-import { getAllResourceTypes, getResources } from "@/features/resources/data";
-import { LatestResources } from "@/features/resources/components/latest-resources";
+import { redirect } from "next/navigation";
 import { CollectionList } from "@/features/collection/components/collection-list";
+import { getCollectionsFromUser } from "@/features/collection/data";
+import { LatestResources } from "@/features/resources/components/latest-resources";
+import { getAllResourceTypes, getResources } from "@/features/resources/data";
+import { getSession } from "@/lib/session";
 
 export default async function DashboardPage({
   searchParams,
@@ -10,13 +12,19 @@ export default async function DashboardPage({
 }) {
   const { isFavorite } = await searchParams;
 
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
+  const userId = session.user.id;
+
   const [collections, resourceTypes, latestResources] = await Promise.all([
-    getCollectionsFromUser(),
+    getCollectionsFromUser(userId),
     getAllResourceTypes(),
     getResources({
       isFavorite,
       limit: 5,
-    }),
+    }, userId),
   ]);
 
   return (

@@ -33,15 +33,24 @@ async function fetchCollectionsFromUser(userId: string) {
   return data;
 }
 
-export async function getCollectionsFromUser() {
+async function resolveUserId(userId?: string) {
+  if (userId) {
+    return userId;
+  }
+
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
-  const userId = session.user.id;
-  const keyParts = ["collectionsFromUser", userId];
+
+  return session.user.id;
+}
+
+export async function getCollectionsFromUser(userId?: string) {
+  const resolvedUserId = await resolveUserId(userId);
+  const keyParts = ["collectionsFromUser", resolvedUserId];
   const cachedFetcher = cache(
-    () => fetchCollectionsFromUser(userId),
+    () => fetchCollectionsFromUser(resolvedUserId),
     keyParts,
     {
       revalidate: 60 * 10,

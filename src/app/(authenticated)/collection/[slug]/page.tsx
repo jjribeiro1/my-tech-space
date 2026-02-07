@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft, Folder, Lock, Unlock } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { CollectionActions } from "@/features/collection/components/collection-actions";
+import { getCollectionsFromUser } from "@/features/collection/data";
 import { ResourceList } from "@/features/resources/components/resource-list";
 import { getAllResourceTypes, getResources } from "@/features/resources/data";
-import { getCollectionsFromUser } from "@/features/collection/data";
-import { CollectionActions } from "@/features/collection/components/collection-actions";
+import { getSession } from "@/lib/session";
 
 export default async function CollectionPage({
   params,
@@ -19,7 +21,13 @@ export default async function CollectionPage({
   const { slug } = await params;
   const { isFavorite, search } = await searchParams;
 
-  const collectionsPromise = getCollectionsFromUser();
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
+  const userId = session.user.id;
+
+  const collectionsPromise = getCollectionsFromUser(userId);
   const resourceTypesPromise = getAllResourceTypes();
 
   const collections = await collectionsPromise;
@@ -32,7 +40,7 @@ export default async function CollectionPage({
       isFavorite: isFavorite,
       search,
       limit: 100000,
-    }),
+    }, userId),
   ]);
 
   return (
