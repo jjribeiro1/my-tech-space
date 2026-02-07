@@ -11,12 +11,17 @@ export function SearchResourceInput() {
   const debouncedValue = useDebounce(inputValue, 400);
 
   useEffect(() => {
+    const currentValue = getQueryParam("search") || "";
+    if (debouncedValue === currentValue) {
+      return;
+    }
+
     if (debouncedValue === "") {
       removeQueryParam("search");
     } else {
       setQueryParam("search", debouncedValue);
     }
-  }, [debouncedValue, removeQueryParam, setQueryParam]);
+  }, [debouncedValue, getQueryParam, removeQueryParam, setQueryParam]);
 
   return (
     <div className="relative max-w-md grow">

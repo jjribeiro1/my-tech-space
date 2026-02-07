@@ -30,19 +30,21 @@ export default async function CollectionPage({
   }
   const userId = session.user.id;
 
-  const collections = await getCollectionsFromUser(userId);
+  const [collections, resourceTypes] = await Promise.all([
+    getCollectionsFromUser(userId),
+    getAllResourceTypes(),
+  ]);
+
   const collectionFromSlug = collections.find((c) => c.slug === slug);
 
+  const resourcesFromCollection = await getResourcesFromUser(userId, {
+    collectionId: collectionFromSlug?.id,
+    isFavorite,
+    search,
+    limit: 100000,
+  });
 
-  const [resourceTypes, resourcesFromCollection] = await Promise.all([
-    getAllResourceTypes(),
-    getResourcesFromUser(userId, {
-      collectionId: collectionFromSlug?.id,
-      isFavorite: isFavorite,
-      search,
-      limit: 100000,
-    }),
-  ]);
+  // return <div>Collection Page</div>;
 
   return (
     <>

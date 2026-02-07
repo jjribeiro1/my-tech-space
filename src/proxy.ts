@@ -1,28 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
 
-const protectedRoutes = ["/dashboard"];
-const publicRoutes = ["/auth/login", "/auth/register", "/"];
+const protectedRoutes = ["/dashboard", "/collection/"];
 
 export function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const isProtectedRoute = protectedRoutes.includes(path);
-  const isPublicRoute = publicRoutes.includes(path);
+  const isProtectedRoute = protectedRoutes.some(
+    (route) => path === route || path.startsWith(`${route}`),
+  );
+
   const sessionCookie = getSessionCookie(request);
 
   if (isProtectedRoute && !sessionCookie) {
     console.error(`Unauthorized access attempt to ${path}`);
     return NextResponse.redirect(new URL("/auth/login", request.url));
-  }
-
-  if (
-    isPublicRoute &&
-    sessionCookie &&
-    path !== "/" &&
-    !request.nextUrl.pathname.startsWith("/dashboard")
-  ) {
-    console.error(`Authenticated user attempting to access public route ${path}`);
-    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
   return NextResponse.next();
