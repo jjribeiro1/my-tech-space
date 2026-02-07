@@ -1,7 +1,7 @@
 "use client";
 import { Star } from "lucide-react";
+import { useQueryState } from "nuqs";
 import { Button } from "@/components/ui/button";
-import { useQueryParams } from "@/hooks/use-query-params";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -9,14 +9,14 @@ interface Props {
 }
 
 export function FavoriteFilterButton({ favoritesCount }: Props) {
-  const { setQueryParam, removeQueryParam, hasQueryParam } = useQueryParams();
+  const [isFavorite, setIsFavorite] = useQueryState("isFavorite", {
+    shallow: false,
+  });
 
-  const filterIsActive = hasQueryParam("isFavorite");
+  const filterIsActive = isFavorite !== null;
 
   function toggleFilter() {
-    return filterIsActive
-      ? removeQueryParam("isFavorite")
-      : setQueryParam("isFavorite", "true");
+    return filterIsActive ? setIsFavorite(null) : setIsFavorite("true");
   }
 
   return (

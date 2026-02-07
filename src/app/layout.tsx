@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export const metadata: Metadata = {
   title: "My tech space",
@@ -18,12 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system">
-          {children}
-          <SpeedInsights />
-          <Analytics />
-          <Toaster closeButton richColors />
-        </ThemeProvider>
+        <NuqsAdapter>
+          <ThemeProvider attribute="class" defaultTheme="system">
+            {children}
+            <SpeedInsights />
+            <Analytics />
+            <Toaster closeButton richColors />
+          </ThemeProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );

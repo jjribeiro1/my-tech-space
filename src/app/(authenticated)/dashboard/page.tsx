@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 import { CollectionList } from "@/features/collection/components/collection-list";
 import { getCollectionsFromUser } from "@/features/collection/data";
 import { LatestResources } from "@/features/resources/components/latest-resources";
-import { getAllResourceTypes, getResourcesFromUser } from "@/features/resources/data";
+import {
+  getAllResourceTypes,
+  getResourcesFromUser,
+} from "@/features/resources/data";
 import { getSession } from "@/lib/session";
 
 export default async function DashboardPage({

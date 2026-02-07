@@ -1,27 +1,28 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
+import { useQueryState } from "nuqs";
 import { Input } from "@/components/ui/input";
-import { useQueryParams } from "@/hooks/use-query-params";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export function SearchResourceInput() {
-  const { setQueryParam, removeQueryParam, getQueryParam } = useQueryParams();
-  const [inputValue, setInputValue] = useState(getQueryParam("search") || "");
+  const [search, setSearch] = useQueryState("search", {
+    shallow: false,
+  });
+  const [inputValue, setInputValue] = useState(search ?? "");
   const debouncedValue = useDebounce(inputValue, 400);
 
   useEffect(() => {
-    const currentValue = getQueryParam("search") || "";
-    if (debouncedValue === currentValue) {
+    if (debouncedValue === (search ?? "")) {
       return;
     }
 
     if (debouncedValue === "") {
-      removeQueryParam("search");
+      setSearch(null);
     } else {
-      setQueryParam("search", debouncedValue);
+      setSearch(debouncedValue);
     }
-  }, [debouncedValue, getQueryParam, removeQueryParam, setQueryParam]);
+  }, [debouncedValue, search, setSearch]);
 
   return (
     <div className="relative max-w-md grow">
