@@ -6,8 +6,8 @@ export default function LoadingDashboard() {
     <div className="container mx-auto py-6">
       <div className="flex w-full flex-col gap-4">
         <div className="flex items-center justify-between">
-          <Skeleton className="h-9 w-[100px]" />
-          <Skeleton className="h-10 w-[200px]" />
+          <Skeleton className="h-9 w-25" />
+          <Skeleton className="h-10 w-50" />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
