@@ -6,6 +6,7 @@ import { users } from "./users";
 export const resourceTypeEnum = t.pgEnum("resource_type", [
   "link",
   "code_snippet",
+  "file",
 ]);
 
 export const resources = t.pgTable("resources", {
