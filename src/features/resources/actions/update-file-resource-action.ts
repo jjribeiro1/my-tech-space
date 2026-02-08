@@ -49,12 +49,12 @@ export async function updateFileResourceAction(
     };
   }
 
-  try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
 
+  try {
     const { id, title, description, collectionId, file } = validatedData.data;
 
     await db

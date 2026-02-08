@@ -32,12 +32,12 @@ export async function deleteFileResourceAction(
     };
   }
 
-  try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
 
+  try {
     const fileData = await db
       .select({ key: resourceFiles.key, sizeBytes: resourceFiles.sizeBytes })
       .from(resourceFiles)

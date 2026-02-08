@@ -177,3 +177,4 @@ src/
 7. Follow shadcn/ui patterns for UI components
 8. Use Zod for all form validation schemas
 9. Return `ActionResponse` from all server actions
+10. Never use `redirect()` inside try catch block

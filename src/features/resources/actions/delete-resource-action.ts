@@ -26,12 +26,12 @@ export async function deleteResourceAction(
     };
   }
 
-  try {
-    const session = await getSession();
-    if (!session) {
-      redirect("/auth/login");
-    }
+  const session = await getSession();
+  if (!session) {
+    redirect("/auth/login");
+  }
 
+  try {
     await db
       .delete(resources)
       .where(
