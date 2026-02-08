@@ -13,9 +13,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   codeSnippetResourceSchema,
   CodeSnippetResourceInput,
@@ -24,6 +30,8 @@ import { createCodeSnippetResourceAction } from "../../actions/create-code-snipp
 import { updateCodeSnippetResourceAction } from "../../actions/update-code-snippet-resource-action";
 import { BaseResourceFields } from "./base-resource-fields";
 import { ResourceCodeSnippetData } from "../../data";
+import { SUPPORTED_LANGUAGES } from "../../constants/languages";
+import { CodeEditor } from "@/components/ui/code-editor";
 
 interface CodeSnippetResourceFormProps {
   collections: Array<{ id: string; name: string }>;
@@ -64,6 +72,8 @@ export function CodeSnippetResourceForm({
     resolver: zodResolver(codeSnippetResourceSchema),
   });
 
+  const selectedLanguage = form.watch("language");
+
   async function onSubmit(data: CodeSnippetResourceInput) {
     setIsPending(true);
     try {
@@ -95,7 +105,22 @@ export function CodeSnippetResourceForm({
               <FormItem className="w-1/3">
                 <FormLabel>Language</FormLabel>
                 <FormControl>
-                  <Input placeholder="typescript" {...field} />
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="cursor-pointer">
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {SUPPORTED_LANGUAGES.map((lang) => (
+                        <SelectItem
+                          key={lang.value}
+                          value={lang.value}
+                          className="cursor-pointer"
+                        >
+                          {lang.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -124,10 +149,12 @@ export function CodeSnippetResourceForm({
             <FormItem>
               <FormLabel>Code</FormLabel>
               <FormControl>
-                <Textarea
+                <CodeEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  language={selectedLanguage || "javascript"}
                   placeholder="Paste your code here..."
-                  className="min-h-[200px] resize-none font-mono"
-                  {...field}
+                  minHeight={200}
                 />
               </FormControl>
               <FormMessage />
