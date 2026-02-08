@@ -3,24 +3,38 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { updateTag } from "next/cache";
+import { z } from "zod";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { resourceLinks } from "@/db/schema/resource-link";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
 import { RESOURCES_CACHE_TAG } from "../data";
-import { LinkResourceInput } from "../schemas/link-resource-schema";
+import { linkResourceSchema } from "../schemas/link-resource-schema";
+
+const schema = linkResourceSchema;
+
+type Input = z.infer<typeof schema>;
 
 export async function createLinkResourceAction(
-  data: LinkResourceInput,
+  data: Input,
 ): Promise<ActionResponse> {
+  const validatedData = schema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      message: "Something went wrong, invalid data",
+    };
+  }
+
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
 
   try {
-    const { title, description, collectionId, url } = data;
+    const { title, description, collectionId, url } = validatedData.data;
 
     const [resource] = await db
       .insert(resources)

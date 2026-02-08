@@ -3,24 +3,39 @@
 import "server-only";
 import { redirect } from "next/navigation";
 import { updateTag } from "next/cache";
+import { z } from "zod";
 import { db } from "@/db";
 import { resources } from "@/db/schema/resource";
 import { resourceCodeSnippets } from "@/db/schema/resource-code-snippet";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
 import { RESOURCES_CACHE_TAG } from "../data";
-import { CodeSnippetResourceInput } from "../schemas/code-snippet-resource-schema";
+import { codeSnippetResourceSchema } from "../schemas/code-snippet-resource-schema";
+
+const schema = codeSnippetResourceSchema;
+
+type Input = z.infer<typeof schema>;
 
 export async function createCodeSnippetResourceAction(
-  data: CodeSnippetResourceInput,
+  data: Input,
 ): Promise<ActionResponse> {
+  const validatedData = schema.safeParse(data);
+
+  if (!validatedData.success) {
+    return {
+      success: false,
+      message: "Something went wrong, invalid data",
+    };
+  }
+
   const session = await getSession();
   if (!session) {
     redirect("/auth/login");
   }
 
   try {
-    const { title, description, collectionId, code, language, filename } = data;
+    const { title, description, collectionId, code, language, filename } =
+      validatedData.data;
 
     const [resource] = await db
       .insert(resources)
