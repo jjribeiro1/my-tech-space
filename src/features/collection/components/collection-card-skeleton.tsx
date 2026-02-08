@@ -2,20 +2,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function CollectionCardSkeleton() {
   return (
-    <div className="rounded-md border p-4 transition-all hover:shadow-md">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-5 w-5 rounded-full" />
-          <Skeleton className="h-4 w-32" />
+    <div className="h-full rounded-md border p-4 transition-all hover:shadow-md">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <Skeleton className="h-4 w-4 shrink-0 rounded-full" />
+            <Skeleton className="h-4 w-24" />
+          </div>
+          <Skeleton className="h-3.5 w-3.5 shrink-0" />
         </div>
-        <Skeleton className="h-4 w-4" />
-      </div>
-      <div className="mb-4">
-        <Skeleton className="mb-2 h-3 w-full" />
-        <Skeleton className="h-3 w-3/4" />
-      </div>
-      <div className="flex justify-end">
-        <Skeleton className="h-8 w-24" />
+
+        <Skeleton className="h-3 w-full" />
+
+        <div className="flex items-center gap-1.5">
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-3 w-1" />
+          <Skeleton className="h-3 w-24" />
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,6 @@
 import Link from "next/link";
-import { Folder, Lock, Dot } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
-import { buttonVariants } from "@/components/ui/button";
+import { Folder, Lock } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import dayjs from "@/lib/dayjs";
 import { Collection } from "../types";
 
@@ -16,50 +10,41 @@ interface Props {
 
 export function CollectionCard({ collection }: Props) {
   return (
-    <Card className="transition-all hover:shadow-md">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Folder className="text-primary h-5 w-5" />
-            <Link
-              href={`/collection/${collection.slug}`}
-              className="font-medium hover:underline"
-              prefetch={true}
-            >
-              {collection.name}
-            </Link>
+    <Link href={`/collection/${collection.slug}`} prefetch={true}>
+      <Card className="group hover:border-primary/50 h-full cursor-pointer p-4 transition-all hover:shadow-md">
+        <CardContent className="flex flex-col gap-3 p-0">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-2">
+              <Folder className="text-primary h-4 w-4 shrink-0" />
+              <span className="truncate font-medium group-hover:underline">
+                {collection.name}
+              </span>
+            </div>
+
+            {collection.isPrivate && (
+              <Lock className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
+            )}
           </div>
 
-          {collection.isPrivate && (
-            <Lock className="text-muted-foreground h-4 w-4" />
+          {collection.description && (
+            <p className="text-secondary-foreground line-clamp-1 text-xs">
+              {collection.description}
+            </p>
           )}
-        </div>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-y-6">
-        <p className="text-secondary-foreground line-clamp-2 text-sm font-medium">
-          {collection.description}
-        </p>
 
-        <div className="flex items-center gap-x-0.5">
-          <span className="text-muted-foreground text-xs">
-            {collection.resourceCount > 0
-              ? `${collection.resourceCount} resource${collection.resourceCount > 1 ? "s" : ""}`
-              : "No resource added"}
-          </span>
-          <Dot />
-          <span className="text-muted-foreground text-xs">
-            {`Updated ${dayjs(collection.updated_at ?? collection.created_at).fromNow(false)}`}
-          </span>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Link
-          href={`/collection/${collection.slug}`}
-          className={buttonVariants({ variant: "ghost", size: "sm" })}
-        >
-          View collection
-        </Link>
-      </CardFooter>
-    </Card>
+          <div className="text-muted-foreground flex items-center gap-1.5 text-xs">
+            <span>
+              {collection.resourceCount > 0
+                ? `${collection.resourceCount} resource${collection.resourceCount > 1 ? "s" : ""}`
+                : "No resources"}
+            </span>
+            <span>·</span>
+            <span>
+              {`Updated ${dayjs(collection.updated_at ?? collection.created_at).fromNow(false)}`}
+            </span>
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
