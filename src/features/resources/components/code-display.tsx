@@ -1,8 +1,11 @@
 "use client";
 
 import * as React from "react";
+import { Check, Copy } from "lucide-react";
 import { highlight, languages } from "prismjs";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 import "prismjs/components/prism-javascript";
 import "prismjs/components/prism-typescript";
@@ -61,10 +64,23 @@ export function CodeDisplay({
   className,
   maxHeight = 300,
 }: CodeDisplayProps) {
+  const [copied, setCopied] = React.useState(false);
+
   const highlightCode = (codeText: string) => {
     const prismLang =
       languages[getPrismLanguage(language)] || languages.javascript;
     return highlight(codeText, prismLang, language);
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      toast.success("Code copied to clipboard");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Failed to copy code");
+    }
   };
 
   return (
@@ -75,6 +91,19 @@ export function CodeDisplay({
       )}
       style={{ maxHeight }}
     >
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-2 right-2 z-10 h-8 w-8 bg-zinc-700/50 hover:bg-zinc-600/50"
+        onClick={handleCopy}
+        aria-label={copied ? "Copied" : "Copy code"}
+      >
+        {copied ? (
+          <Check className="h-4 w-4 text-green-400" />
+        ) : (
+          <Copy className="h-4 w-4 text-zinc-400" />
+        )}
+      </Button>
       <pre
         className="p-4"
         style={{
