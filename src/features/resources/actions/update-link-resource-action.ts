@@ -39,7 +39,7 @@ export async function updateLinkResourceAction(
   try {
     const { title, description, collectionId, url } = validatedData.data.data;
 
-    await db
+    const [updatedResource] = await db
       .update(resources)
       .set({
         title,
@@ -52,7 +52,15 @@ export async function updateLinkResourceAction(
           eq(resources.id, validatedData.data.id),
           eq(resources.userId, session.user.id),
         ),
-      );
+      )
+      .returning({ id: resources.id });
+
+    if (!updatedResource) {
+      return {
+        success: false,
+        message: "Resource not found or you don't have permission to update it",
+      };
+    }
 
     await db
       .update(resourceLinks)

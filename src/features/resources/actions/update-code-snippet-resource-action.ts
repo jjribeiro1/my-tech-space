@@ -40,7 +40,7 @@ export async function updateCodeSnippetResourceAction(
     const { title, description, collectionId, code, language, filename } =
       validatedData.data.data;
 
-    await db
+    const [updatedResource] = await db
       .update(resources)
       .set({
         title,
@@ -53,7 +53,15 @@ export async function updateCodeSnippetResourceAction(
           eq(resources.id, validatedData.data.id),
           eq(resources.userId, session.user.id),
         ),
-      );
+      )
+      .returning({ id: resources.id });
+
+    if (!updatedResource) {
+      return {
+        success: false,
+        message: "Resource not found or you don't have permission to update it",
+      };
+    }
 
     const existingSnippet = await db
       .select({ id: resourceCodeSnippets.id })

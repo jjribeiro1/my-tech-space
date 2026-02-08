@@ -57,14 +57,22 @@ export async function updateFileResourceAction(
   try {
     const { id, title, description, collectionId, file } = validatedData.data;
 
-    await db
+    const [updatedResource] = await db
       .update(resources)
       .set({
         title,
         description: description || null,
         collectionId: collectionId || null,
       })
-      .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)));
+      .where(and(eq(resources.id, id), eq(resources.userId, session.user.id)))
+      .returning({ id: resources.id });
+
+    if (!updatedResource) {
+      return {
+        success: false,
+        message: "Resource not found or you don't have permission to update it",
+      };
+    }
 
     if (file) {
       const existingFile = await db
