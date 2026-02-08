@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ExternalLink, Code } from "lucide-react";
 import {
   Card,
@@ -40,18 +39,6 @@ function ResourceContent({ resource }: { resource: ResourceWithType }) {
   return null;
 }
 
-function ResourceExternalLink({ resource }: { resource: ResourceWithType }) {
-  if (resource.type === "link") {
-    return (
-      <Link href={resource.link.url} target="_blank" rel="noopener noreferrer">
-        <ExternalLink className="h-5 w-5" />
-      </Link>
-    );
-  }
-
-  return null;
-}
-
 export function ResourceItem({ resource, collections }: Props) {
   return (
     <Card className="relative">
@@ -69,7 +56,6 @@ export function ResourceItem({ resource, collections }: Props) {
 
           <div className="flex items-center gap-4">
             <ToggleFavoriteResourceButton resource={resource} />
-            <ResourceExternalLink resource={resource} />
             <ResourceActionsDropdown
               collections={collections}
               resource={resource}
