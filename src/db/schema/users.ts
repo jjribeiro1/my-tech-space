@@ -7,5 +7,6 @@ export const users = t.pgTable("users", {
   email: t.text().notNull().unique(),
   emailVerified: t.boolean().notNull(),
   image: t.text(),
+  storageUsedBytes: t.integer().notNull().default(0),
   ...timestamps,
 });

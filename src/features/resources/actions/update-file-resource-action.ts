@@ -11,6 +11,10 @@ import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
 import { and, eq } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
+import {
+  incrementStorageUsed,
+  decrementStorageUsed,
+} from "@/lib/storage-quota";
 import { RESOURCES_CACHE_TAG } from "../data";
 
 const utapi = new UTApi();
@@ -64,10 +68,12 @@ export async function updateFileResourceAction(
 
     if (file) {
       const existingFile = await db
-        .select({ key: resourceFiles.key })
+        .select({ key: resourceFiles.key, sizeBytes: resourceFiles.sizeBytes })
         .from(resourceFiles)
         .where(eq(resourceFiles.resourceId, id))
         .limit(1);
+
+      const oldFileSize = existingFile[0]?.sizeBytes ?? 0;
 
       if (existingFile.length > 0 && existingFile[0]?.key) {
         await utapi.deleteFiles(existingFile[0].key);
@@ -83,6 +89,12 @@ export async function updateFileResourceAction(
         mimeType: file.mimeType,
         sizeBytes: file.sizeBytes,
       });
+
+      // Update storage: remove old file size, add new file size
+      if (oldFileSize > 0) {
+        await decrementStorageUsed(session.user.id, oldFileSize);
+      }
+      await incrementStorageUsed(session.user.id, file.sizeBytes);
     }
 
     updateTag(RESOURCES_CACHE_TAG);

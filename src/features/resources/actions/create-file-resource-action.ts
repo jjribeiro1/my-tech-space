@@ -9,6 +9,7 @@ import { resources } from "@/db/schema/resource";
 import { resourceFiles } from "@/db/schema/resource-file";
 import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
+import { incrementStorageUsed } from "@/lib/storage-quota";
 import { RESOURCES_CACHE_TAG } from "../data";
 import { fileResourceSchema } from "../schemas/file-resource-schema";
 
@@ -55,6 +56,9 @@ export async function createFileResourceAction(
       mimeType: file.mimeType,
       sizeBytes: file.sizeBytes,
     });
+
+    // Increment storage used by user
+    await incrementStorageUsed(session.user.id, file.sizeBytes);
 
     updateTag(RESOURCES_CACHE_TAG);
 

@@ -11,6 +11,7 @@ import { getSession } from "@/lib/session";
 import { ActionResponse } from "@/types/action";
 import { and, eq } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
+import { decrementStorageUsed } from "@/lib/storage-quota";
 import { RESOURCES_CACHE_TAG } from "../data";
 
 const utapi = new UTApi();
@@ -38,7 +39,7 @@ export async function deleteFileResourceAction(
     }
 
     const fileData = await db
-      .select({ key: resourceFiles.key })
+      .select({ key: resourceFiles.key, sizeBytes: resourceFiles.sizeBytes })
       .from(resourceFiles)
       .innerJoin(resources, eq(resourceFiles.resourceId, resources.id))
       .where(
@@ -48,6 +49,8 @@ export async function deleteFileResourceAction(
         ),
       )
       .limit(1);
+
+    const fileSize = fileData[0]?.sizeBytes ?? 0;
 
     if (fileData.length > 0 && fileData[0]?.key) {
       await utapi.deleteFiles(fileData[0].key);
@@ -61,6 +64,11 @@ export async function deleteFileResourceAction(
           eq(resources.userId, session.user.id),
         ),
       );
+
+    // Decrement storage used by user
+    if (fileSize > 0) {
+      await decrementStorageUsed(session.user.id, fileSize);
+    }
 
     updateTag(RESOURCES_CACHE_TAG);
 
