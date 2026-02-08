@@ -14,8 +14,7 @@ import {
 import { createFileResourceAction } from "../../actions/create-file-resource-action";
 import { updateFileResourceAction } from "../../actions/update-file-resource-action";
 import { BaseResourceFields } from "./base-resource-fields";
-import { UploadDropzone } from "@uploadthing/react";
-import { OurFileRouter } from "@/lib/uploadthing";
+import { UploadDropzone } from "@/utils/uploadthing";
 
 interface FileResourceFormProps {
   collections: Array<{ id: string; name: string }>;
@@ -177,18 +176,11 @@ export function FileResourceForm({
           <label className="text-sm font-medium">File</label>
 
           {!uploadedFile ? (
-            <UploadDropzone<OurFileRouter, "fileResource">
+            <UploadDropzone
               endpoint="fileResource"
               onClientUploadComplete={handleUploadComplete}
               onUploadError={(error: Error) => {
                 toast.error(`Upload failed: ${error.message}`);
-              }}
-              appearance={{
-                container:
-                  "ut-ready ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                button:
-                  "ut-ready:bg-primary ut-ready:text-primary-foreground ut-uploading:bg-primary/50 ut-uploading:text-primary-foreground",
-                allowedContent: "text-muted-foreground text-sm",
               }}
             />
           ) : (
