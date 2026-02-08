@@ -12,10 +12,44 @@ import ResourceActionsDropdown from "./resource-dropdown-actions";
 import { ResourceWithType } from "../data";
 import { Collection } from "@/features/collection/types";
 import { ToggleFavoriteResourceButton } from "./toggle-favorite-resource";
+import { ResourceLinkContent } from "./resource-link-content";
+import { ResourceCodeSnippetContent } from "./resource-code-snippet-content";
 
 interface Props {
   resource: ResourceWithType;
   collections: Array<Collection>;
+}
+
+function getResourceIcon(type: ResourceWithType["type"]) {
+  return type === "link" ? (
+    <ExternalLink className="h-4 w-4" />
+  ) : (
+    <Code className="h-4 w-4" />
+  );
+}
+
+function ResourceContent({ resource }: { resource: ResourceWithType }) {
+  if (resource.type === "link") {
+    return <ResourceLinkContent link={resource.link} />;
+  }
+
+  if (resource.type === "code_snippet") {
+    return <ResourceCodeSnippetContent codeSnippet={resource.codeSnippet} />;
+  }
+
+  return null;
+}
+
+function ResourceExternalLink({ resource }: { resource: ResourceWithType }) {
+  if (resource.type === "link") {
+    return (
+      <Link href={resource.link.url} target="_blank" rel="noopener noreferrer">
+        <ExternalLink className="h-5 w-5" />
+      </Link>
+    );
+  }
+
+  return null;
 }
 
 export function ResourceItem({ resource, collections }: Props) {
@@ -23,25 +57,19 @@ export function ResourceItem({ resource, collections }: Props) {
     <Card className="relative">
       <CardHeader>
         <div className="flex w-full justify-between">
-          <div>
+          <div className="min-w-0 flex-1">
             <CardTitle className="flex items-center gap-2">
-              {resource.type === "link" ? (
-                <ExternalLink className="h-4 w-4" />
-              ) : (
-                <Code className="h-4 w-4" />
-              )}
+              {getResourceIcon(resource.type)}
               {resource.title}
             </CardTitle>
-            <CardDescription>{resource.description}</CardDescription>
+            {resource.description && (
+              <CardDescription>{resource.description}</CardDescription>
+            )}
           </div>
 
           <div className="flex items-center gap-4">
             <ToggleFavoriteResourceButton resource={resource} />
-            {resource.type === "link" && (
-              <Link href={resource.link.url} target="_blank">
-                <ExternalLink className="h-5 w-5" />
-              </Link>
-            )}
+            <ResourceExternalLink resource={resource} />
             <ResourceActionsDropdown
               collections={collections}
               resource={resource}
@@ -49,7 +77,12 @@ export function ResourceItem({ resource, collections }: Props) {
           </div>
         </div>
       </CardHeader>
-      <CardContent>{`Created ${dayjs(resource.created_at).fromNow(false)}`}</CardContent>
+      <CardContent className="space-y-4">
+        <ResourceContent resource={resource} />
+        <div className="text-muted-foreground text-sm">
+          Created {dayjs(resource.created_at).fromNow(false)}
+        </div>
+      </CardContent>
     </Card>
   );
 }
