@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { LinkResourceForm } from "../forms/link-resource-form";
 import { CodeSnippetResourceForm } from "../forms/code-snippet-resource-form";
+import { FileResourceForm } from "../forms/file-resource-form";
 import { ResourceWithType } from "../../data";
 
 interface EditResourceDialogProps {
@@ -41,14 +42,22 @@ export function EditResourceDialog({
           <DialogDescription>Update your resource details.</DialogDescription>
         </DialogHeader>
 
-        {resource.type === "link" ? (
+        {resource.type === "link" && (
           <LinkResourceForm
             collections={collections}
             resourceToEdit={resource}
             onSuccess={handleSuccess}
           />
-        ) : (
+        )}
+        {resource.type === "code_snippet" && (
           <CodeSnippetResourceForm
+            collections={collections}
+            resourceToEdit={resource}
+            onSuccess={handleSuccess}
+          />
+        )}
+        {resource.type === "file" && (
+          <FileResourceForm
             collections={collections}
             resourceToEdit={resource}
             onSuccess={handleSuccess}

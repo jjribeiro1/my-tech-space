@@ -12,6 +12,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteResourceAction } from "../actions/delete-resource-action";
+import { deleteFileResourceAction } from "../actions/delete-file-resource-action";
 import { ResourceWithType } from "../data";
 
 interface Props {
@@ -29,7 +30,10 @@ export function DeleteResourceAlertDialog({
 
   function onSubmit() {
     startTransation(async () => {
-      const action = await deleteResourceAction(resource.id);
+      const action =
+        resource.type === "file"
+          ? await deleteFileResourceAction(resource.id)
+          : await deleteResourceAction(resource.id);
       if (action.success) {
         toast.success(action.message);
         setOpenDialog(false);

@@ -1,4 +1,4 @@
-import { ExternalLink, Code } from "lucide-react";
+import { ExternalLink, Code, FileText } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -13,6 +13,7 @@ import { Collection } from "@/features/collection/types";
 import { ToggleFavoriteResourceButton } from "./toggle-favorite-resource";
 import { ResourceLinkContent } from "./resource-link-content";
 import { ResourceCodeSnippetContent } from "./resource-code-snippet-content";
+import { FilePreview } from "./file-preview";
 
 interface Props {
   resource: ResourceWithType;
@@ -20,11 +21,13 @@ interface Props {
 }
 
 function getResourceIcon(type: ResourceWithType["type"]) {
-  return type === "link" ? (
-    <ExternalLink className="h-4 w-4" />
-  ) : (
-    <Code className="h-4 w-4" />
-  );
+  if (type === "link") {
+    return <ExternalLink className="h-4 w-4" />;
+  }
+  if (type === "file") {
+    return <FileText className="h-4 w-4" />;
+  }
+  return <Code className="h-4 w-4" />;
 }
 
 function ResourceContent({ resource }: { resource: ResourceWithType }) {
@@ -34,6 +37,17 @@ function ResourceContent({ resource }: { resource: ResourceWithType }) {
 
   if (resource.type === "code_snippet") {
     return <ResourceCodeSnippetContent codeSnippet={resource.codeSnippet} />;
+  }
+
+  if (resource.type === "file") {
+    return (
+      <FilePreview
+        filename={resource.file.filename}
+        mimeType={resource.file.mimeType}
+        sizeBytes={resource.file.sizeBytes}
+        url={resource.file.url}
+      />
+    );
   }
 
   return null;

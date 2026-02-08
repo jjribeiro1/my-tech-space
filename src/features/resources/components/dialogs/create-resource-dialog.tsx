@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Link2, Code, BookOpen } from "lucide-react";
+import { Link2, Code, FileText } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -20,8 +20,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { LinkResourceForm } from "../forms/link-resource-form";
 import { CodeSnippetResourceForm } from "../forms/code-snippet-resource-form";
+import { FileResourceForm } from "../forms/file-resource-form";
 
-type ResourceType = "link" | "code_snippet" | "";
+type ResourceType = "link" | "code_snippet" | "file" | "";
 
 interface CreateResourceDialogProps {
   collections: Array<{ id: string; name: string }>;
@@ -83,6 +84,12 @@ export function CreateResourceDialog({
                     Code Snippet
                   </div>
                 </SelectItem>
+                <SelectItem value="file">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4" />
+                    File
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -96,6 +103,13 @@ export function CreateResourceDialog({
 
           {selectedType === "code_snippet" && (
             <CodeSnippetResourceForm
+              collections={collections}
+              onSuccess={handleSuccess}
+            />
+          )}
+
+          {selectedType === "file" && (
+            <FileResourceForm
               collections={collections}
               onSuccess={handleSuccess}
             />
