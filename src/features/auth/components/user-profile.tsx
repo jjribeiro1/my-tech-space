@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -32,6 +33,9 @@ export function UserProfile() {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuItem className="cursor-pointer" asChild>
+          <Link href={`/profile/${session?.user.id}`}>Profile</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer" onClick={logout}>
           Logout
         </DropdownMenuItem>

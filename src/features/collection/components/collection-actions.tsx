@@ -1,4 +1,4 @@
-import { Share2, Edit } from "lucide-react";
+import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteCollectionAlert } from "./delete-collection-alert";
 import { CollectionFormDialog } from "./collection-dialog";
@@ -12,10 +12,6 @@ export function CollectionActions({ collection }: Props) {
   return (
     <>
       <div className="flex items-center gap-2">
-        <Button className="cursor-pointer" variant="outline" size={"sm"}>
-          <Share2 />
-          Share
-        </Button>
 
         <CollectionFormDialog
           key={collection.id + collection.updated_at}
