@@ -2,7 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Folder } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { getPublicCollections, getPublicResources, getPublicProfile } from "@/features/profile/data";
+import {
+  getPublicCollections,
+  getPublicResources,
+  getPublicProfile,
+} from "@/features/profile/data";
 import { PublicResourceList } from "@/features/profile/components/public-resource-list";
 
 export default async function PublicCollectionPage({
@@ -38,7 +42,7 @@ export default async function PublicCollectionPage({
         </div>
 
         <div className="flex items-center gap-2">
-          <Folder className="h-5 w-5 text-primary" />
+          <Folder className="text-primary h-5 w-5" />
           <h1 className="text-2xl font-bold">{collection.name}</h1>
         </div>
 

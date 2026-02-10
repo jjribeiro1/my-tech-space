@@ -1,6 +1,10 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { getPublicProfile, getPublicCollections, getPublicResources } from "@/features/profile/data";
+import {
+  getPublicProfile,
+  getPublicCollections,
+  getPublicResources,
+} from "@/features/profile/data";
 import { ProfileHeader } from "@/features/profile/components/profile-header";
 import { PublicCollectionList } from "@/features/profile/components/public-collection-list";
 import { PublicResourceList } from "@/features/profile/components/public-resource-list";
@@ -47,7 +51,11 @@ export default function PublicProfilePage({
   );
 }
 
-async function ProfileHeaderSection({ params }: { params: Promise<{ userId: string }> }) {
+async function ProfileHeaderSection({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
   const { userId } = await params;
   const user = await getPublicProfile(userId);
   const collections = await getPublicCollections(userId);
@@ -61,14 +69,22 @@ async function ProfileHeaderSection({ params }: { params: Promise<{ userId: stri
   );
 }
 
-async function PublicCollectionListSection({ params }: { params: Promise<{ userId: string }> }) {
+async function PublicCollectionListSection({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
   const { userId } = await params;
   const collections = await getPublicCollections(userId);
 
   return <PublicCollectionList collections={collections} />;
 }
 
-async function PublicResourceListSection({ params }: { params: Promise<{ userId: string }> }) {
+async function PublicResourceListSection({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
   const { userId } = await params;
   const resources = await getPublicResources(userId);
 

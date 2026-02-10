@@ -12,7 +12,6 @@ export function CollectionActions({ collection }: Props) {
   return (
     <>
       <div className="flex items-center gap-2">
-
         <CollectionFormDialog
           key={collection.id + collection.updated_at}
           collectionToEdit={collection}
