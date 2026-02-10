@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 import { cacheTag } from "next/cache";
 import { and, desc, eq, isNull } from "drizzle-orm";
 import { db } from "@/db";
@@ -12,7 +13,7 @@ import { ResourceWithType } from "@/features/resources/data";
 
 export const PUBLIC_PROFILE_TAG = "public-profile";
 
-export async function getPublicProfile(userId: string) {
+export const getPublicProfile = cache(async (userId: string) => {
   "use cache";
   cacheTag(PUBLIC_PROFILE_TAG);
 
@@ -27,9 +28,9 @@ export async function getPublicProfile(userId: string) {
     .where(eq(users.id, userId));
 
   return user;
-}
+});
 
-export async function getPublicCollections(userId: string) {
+export const getPublicCollections = cache(async (userId: string) => {
   "use cache";
   cacheTag(PUBLIC_PROFILE_TAG);
 
@@ -63,86 +64,83 @@ export async function getPublicCollections(userId: string) {
     .orderBy(desc(collections.created_at));
 
   return data;
-}
+});
 
-export async function getPublicResources(
-  userId: string,
-  filters?: { collectionId?: string },
-) {
-  "use cache";
-  cacheTag(PUBLIC_PROFILE_TAG);
+export const getPublicResources = cache(
+  async (userId: string, collectionId?: string) => {
+    "use cache";
+    cacheTag(PUBLIC_PROFILE_TAG);
 
-  const baseQuery = db
-    .select({
-      resource: resources,
-      link: resourceLinks,
-      codeSnippet: resourceCodeSnippets,
-      file: resourceFiles,
-    })
-    .from(resources)
-    .innerJoin(collections, eq(resources.collectionId, collections.id)) // Join collections to check visibility
-    .leftJoin(resourceLinks, eq(resourceLinks.resourceId, resources.id))
-    .leftJoin(
-      resourceCodeSnippets,
-      eq(resourceCodeSnippets.resourceId, resources.id),
-    )
-    .leftJoin(resourceFiles, eq(resourceFiles.resourceId, resources.id))
-    .where(
-      and(
-        eq(resources.userId, userId),
-        isNull(resources.deleted_at),
-        eq(collections.isPrivate, false), // Enforce public collection
-        filters?.collectionId
-          ? eq(resources.collectionId, filters.collectionId)
-          : undefined,
-      ),
-    )
-    .orderBy(desc(resources.created_at));
+    const baseQuery = db
+      .select({
+        resource: resources,
+        link: resourceLinks,
+        codeSnippet: resourceCodeSnippets,
+        file: resourceFiles,
+      })
+      .from(resources)
+      .innerJoin(collections, eq(resources.collectionId, collections.id)) // Join collections to check visibility
+      .leftJoin(resourceLinks, eq(resourceLinks.resourceId, resources.id))
+      .leftJoin(
+        resourceCodeSnippets,
+        eq(resourceCodeSnippets.resourceId, resources.id),
+      )
+      .leftJoin(resourceFiles, eq(resourceFiles.resourceId, resources.id))
+      .where(
+        and(
+          eq(resources.userId, userId),
+          isNull(resources.deleted_at),
+          eq(collections.isPrivate, false), // Enforce public collection
+          collectionId ? eq(resources.collectionId, collectionId) : undefined,
+        ),
+      )
+      .orderBy(desc(resources.created_at));
 
-  const data = await baseQuery;
+    const data = await baseQuery;
 
-  return data.map((row) => {
-    const base = row.resource;
+    return data.map((row) => {
+      const base = row.resource;
 
-    if (base.type === "link" && row.link) {
-      return {
-        ...base,
-        type: "link" as const,
-        link: {
-          id: row.link.id,
-          url: row.link.url,
-        },
-      };
-    }
+      if (base.type === "link" && row.link) {
+        return {
+          ...base,
+          type: "link" as const,
+          link: {
+            id: row.link.id,
+            url: row.link.url,
+          },
+        };
+      }
 
-    if (base.type === "code_snippet" && row.codeSnippet) {
-      return {
-        ...base,
-        type: "code_snippet" as const,
-        codeSnippet: {
-          id: row.codeSnippet.id,
-          code: row.codeSnippet.code,
-          language: row.codeSnippet.language,
-          filename: row.codeSnippet.filename,
-        },
-      };
-    }
+      if (base.type === "code_snippet" && row.codeSnippet) {
+        return {
+          ...base,
+          type: "code_snippet" as const,
+          codeSnippet: {
+            id: row.codeSnippet.id,
+            code: row.codeSnippet.code,
+            language: row.codeSnippet.language,
+            filename: row.codeSnippet.filename,
+          },
+        };
+      }
 
-    if (base.type === "file" && row.file) {
-      return {
-        ...base,
-        type: "file" as const,
-        file: {
-          id: row.file.id,
-          url: row.file.url,
-          key: row.file.key,
-          filename: row.file.filename,
-          mimeType: row.file.mimeType,
-          sizeBytes: row.file.sizeBytes,
-        },
-      };
-    }
+      if (base.type === "file" && row.file) {
+        return {
+          ...base,
+          type: "file" as const,
+          file: {
+            id: row.file.id,
+            url: row.file.url,
+            key: row.file.key,
+            filename: row.file.filename,
+            mimeType: row.file.mimeType,
+            sizeBytes: row.file.sizeBytes,
+          },
+        };
+      }
 
-    return base as ResourceWithType;
-  });
-}
+      return base as ResourceWithType;
+    });
+  },
+);

@@ -57,8 +57,11 @@ async function ProfileHeaderSection({
   params: Promise<{ userId: string }>;
 }) {
   const { userId } = await params;
-  const user = await getPublicProfile(userId);
-  const collections = await getPublicCollections(userId);
+
+  const [user, collections] = await Promise.all([
+    getPublicProfile(userId),
+    getPublicCollections(userId),
+  ]);
 
   if (!user) {
     notFound();
