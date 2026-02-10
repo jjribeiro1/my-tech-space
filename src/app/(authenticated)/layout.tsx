@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { UserProfile } from "@/features/auth/components/user-profile";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { StorageIndicatorWrapper } from "@/components/storage-indicator-wrapper";
 
 export default function AuthenticatedLayout({
   children,
@@ -19,6 +20,7 @@ export default function AuthenticatedLayout({
           </Link>
 
           <div className="flex items-center gap-x-4">
+            <StorageIndicatorWrapper />
             <UserProfile />
             <ThemeToggle />
           </div>
