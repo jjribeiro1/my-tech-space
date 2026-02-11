@@ -73,11 +73,7 @@ async function CollectionHeader({ params }: { params: Props["params"] }) {
   );
 }
 
-async function CollectionResources({
-  params,
-}: {
-  params: Props["params"];
-}) {
+async function CollectionResources({ params }: { params: Props["params"] }) {
   const { userId, slug } = await params;
 
   const collections = await getPublicCollections(userId);
